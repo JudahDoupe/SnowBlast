@@ -16,11 +16,8 @@ public class KeyMove : MonoBehaviour
     void Update()
     {
         var vector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-        if (vector.magnitude > 0.1)
-        {
-            vector.Normalize();
+
             gameObject.GetComponent<Rigidbody>()
-                .velocity = new Vector3(vector.x, 0, vector.y) * -Speed;
-        }
+                .velocity = new Vector3(vector.x, 0, vector.y) * Speed;
     }
 }
