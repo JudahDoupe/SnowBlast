@@ -1,11 +1,14 @@
 using System.Collections;
 using System.Collections.Generic;
+using System.Linq;
+using Assets.Utils;
 using UnityEngine;
 
 public class DamageSphere : MonoBehaviour
 {
     public float Radius = 4;
     public float Speed = 5;
+    public int Damage = 50;
 
     // Start is called before the first frame update
     void Start()
@@ -34,11 +37,15 @@ public class DamageSphere : MonoBehaviour
         }
 
         var colliders = Physics.OverlapSphere(gameObject.transform.position, Radius);
-        foreach (var collider in colliders)
+        var hit = new HashSet<int>();
+        foreach (var collisionObject in colliders.Select(collider => collider.gameObject.GetUltimateParent()))
         {
-            if (collider.gameObject.TryGetComponent<Health>(out var health))
+            if (!hit.Contains(collisionObject.GetInstanceID()) && 
+                collisionObject.TryGetComponent<Health>(out var health))
             {
-                health.Hitpoints -= 50;
+                Debug.Log(collisionObject.name);
+                hit.Add(collisionObject.GetInstanceID());
+                health.Hitpoints -= Damage;
             }
         }
         gameObject.transform.localScale = new Vector3(0,0,0);

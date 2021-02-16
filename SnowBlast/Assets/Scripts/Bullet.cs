@@ -5,6 +5,7 @@ using UnityEngine;
 public class Bullet : MonoBehaviour
 {
     public int StoppingPower;
+    private bool DamageDelivered;
 
     // Start is called before the first frame update
     void Start()
@@ -26,8 +27,10 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (collision.gameObject.TryGetComponent<Health>(out var health))
+        if (!DamageDelivered && collision.gameObject.TryGetComponent<Health>(out var health))
         {
+            DamageDelivered = true;
+            Debug.Log(collision.gameObject.name);
             health.Hitpoints -= StoppingPower;
         }
         Destroy(gameObject);
