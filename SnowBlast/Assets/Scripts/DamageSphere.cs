@@ -16,7 +16,7 @@ public class DamageSphere : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        if (Input.GetKeyDown(KeyCode.Space))
+        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick 1 button 2"))
         {
             StartCoroutine(DoDamage());
         }
