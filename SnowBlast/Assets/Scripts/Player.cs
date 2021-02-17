@@ -17,7 +17,7 @@ public class Player : MonoBehaviour
         var vector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
 
         gameObject.GetComponent<Rigidbody>()
-            .velocity = new Vector3(vector.x, 0, vector.y) * Speed;
+            .velocity = Quaternion.AngleAxis(45, Vector3.up) * new Vector3(vector.x, 0, vector.y) * Speed;
 
         var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
 
