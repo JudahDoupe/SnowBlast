@@ -16,13 +16,9 @@ public class DamageSphere : MonoBehaviour
         gameObject.transform.localScale = new Vector3(0, 0, 0);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Attack()
     {
-        if (Input.GetKeyDown(KeyCode.Space) || Input.GetKeyDown("joystick 1 button 2"))
-        {
-            StartCoroutine(DoDamage());
-        }
+         StartCoroutine(DoDamage());
     }
 
     private IEnumerator DoDamage()

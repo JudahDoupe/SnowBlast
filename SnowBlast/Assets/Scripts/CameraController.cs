@@ -24,12 +24,12 @@ public class CameraController : MonoBehaviour
 
     void FixedUpdate ()
     {
-        distance = Mathf.Clamp(distance - Input.mouseScrollDelta.y * ZoomSpeed, MinDistance, MaxDistance);
-        angle = Mathf.Lerp(MinAngle, MaxAngle, (distance - MinDistance) / (MaxDistance - MinDistance));
+        //distance = Mathf.Clamp(distance - Input.mouseScrollDelta.y * ZoomSpeed, MinDistance, MaxDistance);
+        //angle = Mathf.Lerp(MinAngle, MaxAngle, (distance - MinDistance) / (MaxDistance - MinDistance));
 
-        var targetPosition = Player.transform.position + new Vector3(-1,1,-1) * distance;
-        transform.LookAt(Player.gameObject.transform);
-        transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * Speed);
+        //var targetPosition = Player.transform.position + new Vector3(-1,1,-1) * distance;
+        //transform.LookAt(Player.gameObject.transform);
+        //transform.position = Vector3.Lerp(transform.position, targetPosition, Time.deltaTime * Speed);
         //transform.eulerAngles = Vector3.Lerp(transform.eulerAngles, new Vector3(angle, 0, 0), Time.deltaTime * ZoomSpeed);
     }
 }

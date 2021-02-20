@@ -1,9 +1,11 @@
 using System;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 public class Player : MonoBehaviour
 {
     public float Speed;
+    private Vector2 moveVec = new Vector2(0, 0);
 
     // Start is called before the first frame update
     void Start()
@@ -11,26 +13,53 @@ public class Player : MonoBehaviour
         
     }
 
-    // Update is called once per frame
+    public void OnMoveUpDown(InputValue input)
+    {
+        moveVec = new Vector2(moveVec.x, input.Get<Vector2>().y);
+    }
+
+    public void OnMoveRightLeft(InputValue input)
+    {
+        moveVec = new Vector2(input.Get<Vector2>().x, moveVec.y);
+    }
+
+    public void OnLeftStick(InputValue input)
+    {
+        moveVec = input.Get<Vector2>();
+        var lookPosition = gameObject.transform.position + new Vector3(moveVec.x, 0, moveVec.y) * Speed;
+        gameObject.transform.LookAt(lookPosition);
+    }
+
+    public void OnPrimaryAttack()
+    {
+        var gun = gameObject.GetComponentInChildren<Gun>();
+        gun.Attack();
+    }
+
+    public void OnSecondaryAttack()
+    {
+        var damageSphere = gameObject.GetComponentInChildren<DamageSphere>();
+        damageSphere.Attack();
+    }
+
     void FixedUpdate()
     {
-        var vector = new Vector2(Input.GetAxis("Horizontal"), Input.GetAxis("Vertical"));
-
-        gameObject.GetComponent<Rigidbody>()
-            .velocity = Quaternion.AngleAxis(45, Vector3.up) * new Vector3(vector.x, 0, vector.y) * Speed;
-
-        var ray = Camera.main.ScreenPointToRay(Input.mousePosition);
-
-        if (Physics.Raycast(ray, out var hit))
+        if (moveVec.x != 0 || moveVec.y != 0)
         {
-            var x = hit.point;
-            x.y = transform.position.y;
-            gameObject.transform.LookAt(x);
+            gameObject.GetComponent<Rigidbody>()
+                .velocity = Quaternion.AngleAxis(45, Vector3.up) * new Vector3(moveVec.x, 0, moveVec.y) * Speed;
         }
-        else if (vector.magnitude > 0.2)
+
+        if (Gamepad.current == null)
         {
-            var lookPosition = gameObject.transform.position + new Vector3(vector.x, 0, vector.y) * Speed;
-            gameObject.transform.LookAt(lookPosition);
+            var ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
+
+            if (Physics.Raycast(ray, out var hit))
+            {
+                var x = hit.point;
+                x.y = transform.position.y;
+                gameObject.transform.LookAt(x);
+            }
         }
     }
 }

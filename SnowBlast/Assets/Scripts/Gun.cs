@@ -14,13 +14,9 @@ public class Gun : MonoBehaviour
         
     }
 
-    // Update is called once per frame
-    void Update()
+    public void Attack()
     {
-        if(Input.GetMouseButtonDown(0) || Input.GetKeyDown("joystick 1 button 1"))
-        {
-            var bullet = Instantiate(Projectile, MuzzleTransform.position, MuzzleTransform.rotation);
-            bullet.GetComponent<Rigidbody>().velocity = MuzzleTransform.forward * Speed;
-        }  
+        var bullet = Instantiate(Projectile, MuzzleTransform.position, MuzzleTransform.rotation);
+        bullet.GetComponent<Rigidbody>().velocity = MuzzleTransform.forward * Speed;
     }
 }
