@@ -6,23 +6,27 @@ public class Bullet : MonoBehaviour
 {
     public int StoppingPower;
     private bool DamageDelivered;
+    [HideInInspector]
+    public Vector3 Vector;
+    [HideInInspector]
+    public Vector3 MaxRange;
 
-    // Start is called before the first frame update
+    private Vector3 InstantiatedPosition;
+
     void Start()
     {
-        StartCoroutine(Lifespan());
+        InstantiatedPosition = gameObject.transform.position;
+        GetComponent<Rigidbody>().velocity = Vector;
     }
 
-    private IEnumerator Lifespan()
-    {
-        yield return new WaitForSeconds(0.5f);
-        Destroy(gameObject);
-    }
-
-    // Update is called once per frame
     void Update()
     {
-        
+        var currentPosition = gameObject.transform.position;
+        if (Vector3.Distance(InstantiatedPosition, currentPosition) >
+            Vector3.Distance(InstantiatedPosition, MaxRange))
+        {
+            Destroy(gameObject);
+        }
     }
 
     void OnCollisionEnter(Collision collision)

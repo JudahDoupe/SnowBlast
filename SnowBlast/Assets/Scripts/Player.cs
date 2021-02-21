@@ -6,6 +6,7 @@ public class Player : MonoBehaviour
 {
     public float Speed;
     private Vector2 moveVec = new Vector2(0, 0);
+    private int LastAttackFrame = -1;
 
     // Start is called before the first frame update
     void Start()
@@ -32,12 +33,16 @@ public class Player : MonoBehaviour
 
     public void OnPrimaryAttack()
     {
+        if (LastAttackFrame == Time.frameCount) return;
+        LastAttackFrame = Time.frameCount;
         var gun = gameObject.GetComponentInChildren<Gun>();
         gun.Attack();
     }
 
     public void OnSecondaryAttack()
     {
+        if (LastAttackFrame == Time.frameCount) return;
+        LastAttackFrame = Time.frameCount;
         var damageSphere = gameObject.GetComponentInChildren<DamageSphere>();
         damageSphere.Attack();
     }

@@ -1,22 +1,18 @@
-using System.Collections;
-using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms;
 
 public class Gun : MonoBehaviour
 {
     public GameObject Projectile;
     public Transform MuzzleTransform;
-    public int Speed;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-        
-    }
+    public float MaxRange = 100f;
+    public float MuzzleVelocity = 10f;
 
     public void Attack()
     {
         var bullet = Instantiate(Projectile, MuzzleTransform.position, MuzzleTransform.rotation);
-        bullet.GetComponent<Rigidbody>().velocity = MuzzleTransform.forward * Speed;
+        var projectile = bullet.GetComponent<Bullet>();
+        projectile.Vector = MuzzleTransform.forward * MuzzleVelocity;
+        projectile.MaxRange = MuzzleTransform.forward * MaxRange;
     }
 }

@@ -50,7 +50,6 @@
   <ItemGroup>
     <Compile Include="Assets\Utils\EnumerableExtensions.cs" />
     <Compile Include="Assets\Utils\GameObjectExtensions.cs" />
-    <Compile Include="Assets\Scripts\Projectile.cs" />
     <Compile Include="Assets\Scripts\ArenaController.cs" />
     <Compile Include="Assets\Scripts\Bullet.cs" />
     <Compile Include="Assets\Scripts\Player.cs" />
