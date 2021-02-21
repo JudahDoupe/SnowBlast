@@ -34,7 +34,7 @@ public class DamageSphere : MonoBehaviour
 
         var colliders = Physics.OverlapSphere(gameObject.transform.position, Radius);
         var hit = new HashSet<int>();
-        foreach (var collisionObject in colliders.Select(collider => collider.gameObject.GetUltimateParent()))
+        foreach (var collisionObject in colliders.Select(collider => collider.gameObject.UltimateParent()))
         {
             if (!hit.Contains(collisionObject.GetInstanceID()) && 
                 collisionObject.TryGetComponent<Health>(out var health))

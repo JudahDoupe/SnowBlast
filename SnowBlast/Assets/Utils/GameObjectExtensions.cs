@@ -1,10 +1,11 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace Assets.Utils
 {
     public static class GameObjectExtensions
     {
-        public static GameObject GetUltimateParent(this GameObject self)
+        public static GameObject UltimateParent(this GameObject self)
         {
             while (self.transform.parent != null)
             {
@@ -12,6 +13,18 @@ namespace Assets.Utils
             }
 
             return self;
+        }
+
+        public static T UltimateParent<T>(this MonoBehaviour self)
+        {
+            var parent = self.transform.parent;
+            while (parent != null)
+            {
+                if (self.transform.parent is T t) return t;
+                parent = self.transform.parent;
+            }
+
+            throw new ApplicationException($"No parent implements {typeof(T).Name}");
         }
     }
 }

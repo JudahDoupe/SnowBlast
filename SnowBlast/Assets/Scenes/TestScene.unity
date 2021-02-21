@@ -401,6 +401,7 @@ GameObject:
   - component: {fileID: 898951484}
   - component: {fileID: 898951483}
   - component: {fileID: 898951485}
+  - component: {fileID: 898951486}
   m_Layer: 5
   m_Name: Wave Announcement
   m_TagString: Untagged
@@ -440,7 +441,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   m_Material: {fileID: 0}
-  m_Color: {r: 0.19607843, g: 0.19607843, b: 0.19607843, a: 1}
+  m_Color: {r: 1, g: 1, b: 1, a: 1}
   m_RaycastTarget: 1
   m_RaycastPadding: {x: 0, y: 0, z: 0, w: 0}
   m_Maskable: 1
@@ -449,8 +450,8 @@ MonoBehaviour:
       m_Calls: []
   m_FontData:
     m_Font: {fileID: 10102, guid: 0000000000000000e000000000000000, type: 0}
-    m_FontSize: 30
-    m_FontStyle: 0
+    m_FontSize: 40
+    m_FontStyle: 3
     m_BestFit: 0
     m_MinSize: 2
     m_MaxSize: 40
@@ -481,6 +482,22 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: c42511dd9cf7cbb428128cf9d175287d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+  Linger: 1.5
+  SlideTime: 0.5
+--- !u!114 &898951486
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 898951481}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3245ec927659c4140ac4f8d17403cc18, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  m_HorizontalFit: 2
+  m_VerticalFit: 2
 --- !u!1 &1104964274 stripped
 GameObject:
   m_CorrespondingSourceObject: {fileID: 6069840109820139744, guid: fea96b8bc9b07014c8bd7f533cbdd672, type: 3}
@@ -639,6 +656,7 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1340177910}
+  - component: {fileID: 1340177911}
   m_Layer: 0
   m_Name: ArenaController
   m_TagString: Untagged
@@ -660,6 +678,18 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 8
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
+--- !u!114 &1340177911
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1340177909}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 170bb74de093d5c46928f7535a62bbfd, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &1681058297
 GameObject:
   m_ObjectHideFlags: 0
@@ -782,7 +812,7 @@ GameObject:
   - component: {fileID: 1870477102}
   - component: {fileID: 1870477101}
   m_Layer: 5
-  m_Name: HUD
+  m_Name: UILayer
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
