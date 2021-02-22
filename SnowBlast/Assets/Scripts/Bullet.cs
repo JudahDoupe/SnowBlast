@@ -6,6 +6,8 @@ public class Bullet : MonoBehaviour
 {
     public int StoppingPower;
     private bool DamageDelivered;
+    public Allegiance Allegiance = Allegiance.Enemy;
+
     [HideInInspector]
     public Vector3 Vector;
     [HideInInspector]
@@ -33,9 +35,11 @@ public class Bullet : MonoBehaviour
     {
         if (!DamageDelivered && collision.gameObject.TryGetComponent<Health>(out var health))
         {
-            DamageDelivered = true;
-            Debug.Log(collision.gameObject.name);
-            health.Hitpoints -= StoppingPower;
+            if (health.Allegiance != Allegiance)
+            {
+                DamageDelivered = true;
+                health.Hitpoints -= StoppingPower;
+            }
         }
         Destroy(gameObject);
     }

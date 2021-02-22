@@ -7,6 +7,7 @@ public class Gun : MonoBehaviour
     public Transform MuzzleTransform;
     public float MaxRange = 100f;
     public float MuzzleVelocity = 10f;
+    public Allegiance Allegiance = Allegiance.Player;
 
     public void Attack()
     {
@@ -14,5 +15,6 @@ public class Gun : MonoBehaviour
         var projectile = bullet.GetComponent<Bullet>();
         projectile.Vector = MuzzleTransform.forward * MuzzleVelocity;
         projectile.MaxRange = MuzzleTransform.forward * MaxRange;
+        projectile.Allegiance = Allegiance;
     }
 }

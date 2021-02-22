@@ -1,49 +1,82 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 using UnityEngine;
-using Assets.Utils;
 
 namespace Assets.Scripts
 {
     class ArenaController: MonoBehaviour
     {
-        enum ArenaState
+        public GameObject[] SpawnablePrefabs;
+
+        private enum ArenaState
         {
             ShowWaveAnnouncement,
             StartWave,
-            InWave
+            InWave,
+            GameOver,
+            Done
         }
 
-        public GameObject[] SpawnablePrefabs;
+        private readonly IReadOnlyDictionary<ArenaState, Func<ArenaState>> StateFunctions;
+
         private ArenaState State = ArenaState.ShowWaveAnnouncement;
         private float WaveStartTime;
         private int Wave = 1;
 
+        public ArenaController()
+        {
+            StateFunctions = new Dictionary<ArenaState, Func<ArenaState>>
+            {
+                {ArenaState.ShowWaveAnnouncement, () => ShowWaveAnnouncement()},
+                {ArenaState.StartWave, () => StartWave()},
+                {ArenaState.InWave, () => InWave()},
+                {ArenaState.GameOver, () => GameOver()},
+                {ArenaState.Done, () => ArenaState.Done}
+            };
+        }
+
         void Update()
         {
-            switch (State)
+            State = StateFunctions[State]();
+        }
+
+        private ArenaState ShowWaveAnnouncement()
+        {
+            var announcement = FindObjectOfType<WaveAnnouncement>(true);
+            announcement.Say($"Wave {Wave} - Start!");
+            WaveStartTime = Time.fixedTime + announcement.TotalTime;
+            return ArenaState.StartWave;
+        }
+
+        private ArenaState StartWave()
+        {
+            if (Time.fixedTime >= WaveStartTime)
             {
-                case ArenaState.ShowWaveAnnouncement:
-                    var announcement = FindObjectOfType<WaveAnnouncement>(true);
-                    announcement.Say($"Wave {Wave} - Start!");
-                    State = ArenaState.StartWave;
-                    WaveStartTime = Time.fixedTime + announcement.TotalTime;
-                    break;
-                case ArenaState.StartWave:
-                    if (Time.fixedTime >= WaveStartTime)
-                    {
-                        var player = FindObjectOfType<Player>();
-                        var turret = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(10, 0, 10),
-                            Quaternion.identity);
-                        State = ArenaState.InWave;
-                    }
-                    break;
-                case ArenaState.InWave:
-                    break;
+                var player = FindObjectOfType<Player>();
+                var turret = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(10, 0, 10),
+                    Quaternion.identity);
+                return ArenaState.InWave;
             }
+
+            return State;
+        }
+
+        private ArenaState InWave()
+        {
+            var player = FindObjectOfType<Player>();
+            if (player == null)
+            {
+                return ArenaState.GameOver;
+            }
+
+            return State;
+        }
+
+        private ArenaState GameOver()
+        {
+            var gameOver = GameObject.Find("UILayer").transform.Find("GameOver");
+            gameOver.gameObject.SetActive(true);
+            return ArenaState.Done;
         }
     }
 }

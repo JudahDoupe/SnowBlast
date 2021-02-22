@@ -39,7 +39,6 @@ public class DamageSphere : MonoBehaviour
             if (!hit.Contains(collisionObject.GetInstanceID()) && 
                 collisionObject.TryGetComponent<Health>(out var health))
             {
-                Debug.Log(collisionObject.name);
                 hit.Add(collisionObject.GetInstanceID());
                 health.Hitpoints -= Damage;
             }

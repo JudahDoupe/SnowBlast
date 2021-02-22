@@ -16,10 +16,9 @@ public class TurretPivot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var players = GameObject.FindGameObjectsWithTag("Player");
-        if (players.Length > 0)
+        var maybePlayer = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault();
+        if (maybePlayer is {} player && player.gameObject.activeInHierarchy)
         {
-            var player = players.First();
             var lookQuat = Quaternion.LookRotation(player.transform.position - gameObject.transform.position, Vector3.up);
             gameObject.transform.rotation = Quaternion.Lerp(gameObject.transform.rotation, lookQuat, PivotSpeed * Time.deltaTime);
         }

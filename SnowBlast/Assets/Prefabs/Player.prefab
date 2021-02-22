@@ -44,6 +44,7 @@ GameObject:
   - component: {fileID: 6069840109820139751}
   - component: {fileID: 1104964275}
   - component: {fileID: 7034205380445843807}
+  - component: {fileID: 1201868172}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -164,12 +165,46 @@ MonoBehaviour:
   m_ControlsChangedEvent:
     m_PersistentCalls:
       m_Calls: []
-  m_ActionEvents: []
+  m_ActionEvents:
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 9c96f65b-f5d4-43ec-9a22-f20dfabd1d18
+    m_ActionName: Player/MoveUpDown[/Keyboard/w,/Keyboard/s]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: bc13c013-fe8d-461e-8061-48ccc86e9942
+    m_ActionName: Player/PrimaryAttack[/Keyboard/space,/Mouse/leftButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 2e02c2ac-11d3-4aa8-9622-8a046ea74829
+    m_ActionName: Player/SecondaryAttack[/Keyboard/leftAlt,/Mouse/rightButton]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: dc1a9abe-efbe-41f9-ac4c-f7f23a426144
+    m_ActionName: Player/MoveRightLeft[/Keyboard/a,/Keyboard/d]
+  - m_PersistentCalls:
+      m_Calls: []
+    m_ActionId: 1ee3ff91-aa17-44c0-958c-e607f509f679
+    m_ActionName: Player/LeftStick
   m_NeverAutoSwitchControlSchemes: 0
   m_DefaultControlScheme: 
   m_DefaultActionMap: Player
   m_SplitScreenIndex: -1
   m_Camera: {fileID: 0}
+--- !u!114 &1201868172
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069840109820139744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: cbe825935a634d240bf78cd37491008d, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  Hitpoints: 100
+  Allegiance: 0
 --- !u!1 &6069840110391805463
 GameObject:
   m_ObjectHideFlags: 0
@@ -395,3 +430,4 @@ MonoBehaviour:
   MuzzleTransform: {fileID: 6069840109674253723}
   MaxRange: 22.8
   MuzzleVelocity: 54
+  Allegiance: 0

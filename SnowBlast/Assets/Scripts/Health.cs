@@ -6,6 +6,8 @@ public class Health : MonoBehaviour
 {
     public int Hitpoints;
 
+    public Allegiance Allegiance = Allegiance.Enemy;
+
     // Start is called before the first frame update
     void Start()
     {
@@ -20,4 +22,10 @@ public class Health : MonoBehaviour
             Destroy(gameObject);
         }
     }
+}
+
+public enum Allegiance
+{
+    Player,
+    Enemy
 }
