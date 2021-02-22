@@ -19,6 +19,7 @@ public class WaveAnnouncement : MonoBehaviour
     private float SlideStartTime;
     public float Linger = 1.5f;
     public float SlideTime = 1.5f;
+    public float TotalTime => Linger + 2 * SlideTime;
 
     private string Text
     {

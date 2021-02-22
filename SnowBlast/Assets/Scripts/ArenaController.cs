@@ -12,20 +12,36 @@ namespace Assets.Scripts
     {
         enum ArenaState
         {
-            Start,
-            Wave1,
+            ShowWaveAnnouncement,
+            StartWave,
+            InWave
         }
 
-        private ArenaState State = ArenaState.Start;
+        public GameObject[] SpawnablePrefabs;
+        private ArenaState State = ArenaState.ShowWaveAnnouncement;
+        private float WaveStartTime;
+        private int Wave = 1;
 
         void Update()
         {
             switch (State)
             {
-                case ArenaState.Start:
+                case ArenaState.ShowWaveAnnouncement:
                     var announcement = FindObjectOfType<WaveAnnouncement>(true);
-                    announcement.Say($"Wave 1 - Start!");
-                    State = ArenaState.Wave1;
+                    announcement.Say($"Wave {Wave} - Start!");
+                    State = ArenaState.StartWave;
+                    WaveStartTime = Time.fixedTime + announcement.TotalTime;
+                    break;
+                case ArenaState.StartWave:
+                    if (Time.fixedTime >= WaveStartTime)
+                    {
+                        var player = FindObjectOfType<Player>();
+                        var turret = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(10, 0, 10),
+                            Quaternion.identity);
+                        State = ArenaState.InWave;
+                    }
+                    break;
+                case ArenaState.InWave:
                     break;
             }
         }

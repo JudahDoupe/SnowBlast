@@ -9,8 +9,9 @@ public class TurretCannon : MonoBehaviour
     public GameObject Projectile;
     public Transform Muzzle1Transform;
     public Transform Muzzle2Transform;
-    public float ProjectileSpeed;
+    public float MuzzleVelocity = 50f;
     public float FireRate;
+    public float MaxRange = 100f;
 
     // Start is called before the first frame update
     void Start()
@@ -20,14 +21,18 @@ public class TurretCannon : MonoBehaviour
 
     private IEnumerator Fire()
     {
+        var barrel = 0;
+        var barrels = new []{ Muzzle1Transform, Muzzle2Transform };
         while (true)
         {
             yield return new WaitForSeconds(FireRate/2);
-            var bullet1 = Instantiate(Projectile, Muzzle1Transform.position, Muzzle1Transform.rotation);
-            bullet1.GetComponent<Rigidbody>().velocity = Muzzle1Transform.forward * ProjectileSpeed;
-            yield return new WaitForSeconds(FireRate / 2);
-            var bullet2 = Instantiate(Projectile, Muzzle2Transform.position, Muzzle2Transform.rotation);
-            bullet2.GetComponent<Rigidbody>().velocity = Muzzle1Transform.forward * ProjectileSpeed;
+            var muzzle = barrels[barrel];
+            var bullet1 = Instantiate(Projectile, muzzle.position, muzzle.rotation);
+            var b1 = bullet1.GetComponent<Bullet>();
+
+            b1.Vector = muzzle.forward * MuzzleVelocity;
+            b1.MaxRange = muzzle.forward * MaxRange;
+            barrel = (barrel + 1) % 2;
         }
     }
 
