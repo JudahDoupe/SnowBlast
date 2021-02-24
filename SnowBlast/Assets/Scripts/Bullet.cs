@@ -1,5 +1,6 @@
 using System.Collections;
 using System.Collections.Generic;
+using Assets.Utils;
 using UnityEngine;
 
 public class Bullet : MonoBehaviour
@@ -33,12 +34,13 @@ public class Bullet : MonoBehaviour
 
     void OnCollisionEnter(Collision collision)
     {
-        if (!DamageDelivered && collision.gameObject.TryGetComponent<Health>(out var health))
+        if (!DamageDelivered && collision.gameObject.UltimateParent().TryGetComponent<Health>(out var health))
         {
             if (health.Allegiance != Allegiance)
             {
                 DamageDelivered = true;
                 health.Hitpoints -= StoppingPower;
+                Debug.Log($"{health.Allegiance} {health.Hitpoints}");
             }
         }
         Destroy(gameObject);

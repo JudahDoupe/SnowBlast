@@ -1,12 +1,19 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
+using UnityEngine.UI;
+using Random = UnityEngine.Random;
 
 namespace Assets.Scripts
 {
     class ArenaController: MonoBehaviour
     {
+        [Range(1,3)]
+        public int MaxWaves = 2;
         public GameObject[] SpawnablePrefabs;
+
+        private readonly List<GameObject> ActiveEnemies = new List<GameObject>();
 
         private enum ArenaState
         {
@@ -14,14 +21,15 @@ namespace Assets.Scripts
             StartWave,
             InWave,
             GameOver,
-            Done
+            Done,
+            WinState
         }
 
         private readonly IReadOnlyDictionary<ArenaState, Func<ArenaState>> StateFunctions;
 
         private ArenaState State = ArenaState.ShowWaveAnnouncement;
         private float WaveStartTime;
-        private int Wave = 1;
+        private int Wave;
 
         public ArenaController()
         {
@@ -31,7 +39,8 @@ namespace Assets.Scripts
                 {ArenaState.StartWave, () => StartWave()},
                 {ArenaState.InWave, () => InWave()},
                 {ArenaState.GameOver, () => GameOver()},
-                {ArenaState.Done, () => ArenaState.Done}
+                {ArenaState.Done, () => ArenaState.Done},
+                {ArenaState.WinState, () => WinState()}
             };
         }
 
@@ -42,6 +51,8 @@ namespace Assets.Scripts
 
         private ArenaState ShowWaveAnnouncement()
         {
+            Wave += 1;
+            ActiveEnemies.Clear();
             var announcement = FindObjectOfType<WaveAnnouncement>(true);
             announcement.Say($"Wave {Wave} - Start!");
             WaveStartTime = Time.fixedTime + announcement.TotalTime;
@@ -53,8 +64,17 @@ namespace Assets.Scripts
             if (Time.fixedTime >= WaveStartTime)
             {
                 var player = FindObjectOfType<Player>();
-                var turret = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(10, 0, 10),
-                    Quaternion.identity);
+                for (var i = 0; i < Wave; ++i)
+                {
+                    var angleFromPlayer = Random.Range(0.0f, 359.0f) * Mathf.Deg2Rad;
+                    var distanceFromPlayer = Random.Range(5.0f, 10.0f);
+                    var x = Mathf.Cos(angleFromPlayer) * distanceFromPlayer;
+                    var z = Mathf.Sin(angleFromPlayer) * distanceFromPlayer;
+                    var enemy = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(x, 0, z),
+                        Quaternion.identity);
+                    ActiveEnemies.Add(enemy);
+                }
+                
                 return ArenaState.InWave;
             }
 
@@ -64,9 +84,14 @@ namespace Assets.Scripts
         private ArenaState InWave()
         {
             var player = FindObjectOfType<Player>();
-            if (player == null)
+            if (!player.gameObject.activeSelf)
             {
                 return ArenaState.GameOver;
+            }
+            if (ActiveEnemies.All(enemy => !enemy.gameObject.activeSelf))
+            {
+                if (Wave >= MaxWaves) return ArenaState.WinState;
+                return ArenaState.ShowWaveAnnouncement;
             }
 
             return State;
@@ -75,6 +100,14 @@ namespace Assets.Scripts
         private ArenaState GameOver()
         {
             var gameOver = GameObject.Find("UILayer").transform.Find("GameOver");
+            gameOver.gameObject.SetActive(true);
+            return ArenaState.Done;
+        }
+
+        private ArenaState WinState()
+        {
+            var gameOver = GameObject.Find("UILayer").transform.Find("GameOver");
+            gameOver.GetComponent<Text>().text = "VICTORY!";
             gameOver.gameObject.SetActive(true);
             return ArenaState.Done;
         }

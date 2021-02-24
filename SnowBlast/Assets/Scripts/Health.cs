@@ -19,7 +19,7 @@ public class Health : MonoBehaviour
     {
         if (Hitpoints <= 0)
         {
-            Destroy(gameObject);
+            gameObject.SetActive(false);
         }
     }
 }

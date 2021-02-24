@@ -203,7 +203,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: cbe825935a634d240bf78cd37491008d, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  Hitpoints: 100
+  Hitpoints: 250
   Allegiance: 0
 --- !u!1 &6069840110391805463
 GameObject:
