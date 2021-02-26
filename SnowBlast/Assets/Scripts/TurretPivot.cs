@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Utils;
 using UnityEngine;
 
 public class TurretPivot : MonoBehaviour
@@ -16,8 +17,8 @@ public class TurretPivot : MonoBehaviour
     // Update is called once per frame
     void Update()
     {
-        var maybePlayer = GameObject.FindGameObjectsWithTag("Player").FirstOrDefault();
-        if (maybePlayer is {} player && player.gameObject.activeInHierarchy)
+        var player = Find.ThePlayer;
+        if (player != null)
         {
             var lookQuat = Quaternion.LookRotation(player.transform.position - gameObject.transform.position, Vector3.up);
             gameObject.transform.rotation = Quaternion.Lerp(gameObject.transform.rotation, lookQuat, PivotSpeed * Time.deltaTime);

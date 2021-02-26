@@ -33,15 +33,14 @@ public class DamageSphere : MonoBehaviour
         }
 
         var colliders = Physics.OverlapSphere(gameObject.transform.position, Radius);
-        var hit = new HashSet<int>();
-        foreach (var collisionObject in colliders.Select(collider => collider.gameObject.UltimateParent()))
+        foreach (var health in colliders
+            .Select(collider => collider.gameObject.UltimateParent())
+            .GroupBy(collisionObject => collisionObject.GetInstanceID())
+            .Select(group => group.First().GetComponent<Health>())
+            .OfType<Health>()
+        )
         {
-            if (!hit.Contains(collisionObject.GetInstanceID()) && 
-                collisionObject.TryGetComponent<Health>(out var health))
-            {
-                hit.Add(collisionObject.GetInstanceID());
-                health.Hitpoints -= Damage;
-            }
+            health.ApplyDamage(Damage, Allegiance.Player);
         }
         gameObject.transform.localScale = new Vector3(0,0,0);
     }

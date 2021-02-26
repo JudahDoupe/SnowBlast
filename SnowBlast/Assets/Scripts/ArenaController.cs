@@ -84,7 +84,7 @@ namespace Assets.Scripts
         private ArenaState InWave()
         {
             var player = FindObjectOfType<Player>();
-            if (!player.gameObject.activeSelf)
+            if (player == null)
             {
                 return ArenaState.GameOver;
             }

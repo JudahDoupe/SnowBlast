@@ -39,8 +39,7 @@ public class Bullet : MonoBehaviour
             if (health.Allegiance != Allegiance)
             {
                 DamageDelivered = true;
-                health.Hitpoints -= StoppingPower;
-                Debug.Log($"{health.Allegiance} {health.Hitpoints}");
+                health.ApplyDamage(StoppingPower, Allegiance);
             }
         }
         Destroy(gameObject);

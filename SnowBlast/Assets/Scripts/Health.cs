@@ -4,19 +4,30 @@ using UnityEngine;
 
 public class Health : MonoBehaviour
 {
-    public int Hitpoints;
+    [SerializeField]
+    private int Hitpoints;
+
+    [HideInInspector] 
+    public bool Invulnerable;
 
     public Allegiance Allegiance = Allegiance.Enemy;
 
-    // Start is called before the first frame update
-    void Start()
+    [HideInInspector]
+    public int MaxHealth { get; private set; }
+
+    [HideInInspector]
+    public int CurrentHealth => Hitpoints;
+
+    public void Start()
     {
-        
+        MaxHealth = Hitpoints;
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ApplyDamage(int amount, Allegiance damageSource)
     {
+        if (Invulnerable) return;
+        if (damageSource == Allegiance) return;
+        Hitpoints -= amount;
         if (Hitpoints <= 0)
         {
             gameObject.SetActive(false);

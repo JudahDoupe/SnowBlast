@@ -1,6 +1,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Utils;
 using UnityEngine;
 
 public class TurretCannon : MonoBehaviour
@@ -24,9 +25,9 @@ public class TurretCannon : MonoBehaviour
     {
         var barrel = 0;
         var barrels = new []{ Muzzle1Transform, Muzzle2Transform };
-        while (GameObject.FindGameObjectsWithTag("Player").Any())
+        while (Find.ThePlayer != null)
         {
-            yield return new WaitForSeconds(FireRate/2);
+            yield return new WaitForSeconds(FireRate / 2);
             var muzzle = barrels[barrel];
             var bullet1 = Instantiate(Projectile, muzzle.position, muzzle.rotation);
             var b1 = bullet1.GetComponent<Bullet>();

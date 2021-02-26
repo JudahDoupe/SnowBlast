@@ -1,3 +1,4 @@
+using Assets.Utils;
 using UnityEngine;
 
 public class CameraController : MonoBehaviour
@@ -6,14 +7,14 @@ public class CameraController : MonoBehaviour
 
     void Start()
     {
-        var player = GameObject.FindWithTag("Player");
+        var player = Find.ThePlayer;
         transform.position = TargetPosition(player);
         transform.LookAt(player.gameObject.transform);
     }
 
     void FixedUpdate ()
     {
-        var player = GameObject.FindWithTag("Player");
+        var player = Find.ThePlayer;
         if (player != null)
         {
             transform.position = Vector3.Lerp(transform.position, TargetPosition(player), Time.deltaTime * Speed);
