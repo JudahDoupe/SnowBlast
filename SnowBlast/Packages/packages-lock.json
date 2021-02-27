@@ -1,5 +1,12 @@
 {
   "dependencies": {
+    "com.boundfoxstudios.fluentassertions": {
+      "version": "https://github.com/BoundfoxStudios/fluentassertions-unity.git#upm",
+      "depth": 0,
+      "source": "git",
+      "dependencies": {},
+      "hash": "88a9c4e26d7a627454332fb4473ae891048addab"
+    },
     "com.unity.collab-proxy": {
       "version": "1.3.9",
       "depth": 0,

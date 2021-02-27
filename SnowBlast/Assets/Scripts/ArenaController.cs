@@ -12,6 +12,7 @@ namespace Assets.Scripts
         [Range(1,3)]
         public int MaxWaves = 2;
         public GameObject[] SpawnablePrefabs;
+        public GameObject HealthBarPrefab;
 
         private readonly List<GameObject> ActiveEnemies = new List<GameObject>();
 
@@ -46,7 +47,15 @@ namespace Assets.Scripts
 
         void Update()
         {
-            State = StateFunctions[State]();
+            try
+            {
+                State = StateFunctions[State]();
+            }
+            catch (Exception e)
+            {
+                Debug.LogException(e);
+                State = ArenaState.Done;
+            }
         }
 
         private ArenaState ShowWaveAnnouncement()
@@ -72,6 +81,8 @@ namespace Assets.Scripts
                     var z = Mathf.Sin(angleFromPlayer) * distanceFromPlayer;
                     var enemy = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(x, 0, z),
                         Quaternion.identity);
+                    var healthBar = Instantiate(HealthBarPrefab);
+                    healthBar.GetComponent<EnemyHealthBar>().SetParent(enemy);
                     ActiveEnemies.Add(enemy);
                 }
                 

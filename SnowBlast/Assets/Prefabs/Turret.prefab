@@ -249,6 +249,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hitpoints: 250
+  Invulnerable: 0
   Allegiance: 1
 --- !u!114 &-8690323530513139068
 MonoBehaviour:
@@ -263,6 +264,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Hitpoints: 30
+  Invulnerable: 0
   Allegiance: 1
 --- !u!1 &1819089588146171520
 GameObject:
@@ -506,5 +508,5 @@ MonoBehaviour:
   Muzzle1Transform: {fileID: 1819089588023080377}
   Muzzle2Transform: {fileID: 1819089587770008001}
   MuzzleVelocity: 39.87
-  FireRate: 0.5
+  FireRate: 1.02
   MaxRange: 25
