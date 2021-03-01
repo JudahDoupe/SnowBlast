@@ -18,20 +18,18 @@ namespace Assets.Scripts
             var parentObjectHeight = GetMaxBounds(parent).max.y;
             var myHeight = gameObject.GetComponent<Canvas>().GetComponent<RectTransform>().rect.height;
             
-            Debug.Log($"{parentObjectHeight} + {myHeight} = {parentObjectHeight + myHeight}");
-
             gameObject.transform.SetParent(parent.transform);
             gameObject.transform.localPosition = new Vector3(0, parentObjectHeight + myHeight + 1, 0);
         }
 
         public void Update()
         {
-            transform.rotation = Quaternion.LookRotation(Camera.main.transform.forward, -Camera.main.transform.up);
+            transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
         }
 
         void UpdateHealthBar(HealthNotification healthNotification)
         {
-            var slider = GetComponent<Slider>();
+            var slider = gameObject.transform.Find("EnemyHealthBar").GetComponent<Slider>();
             slider.value = 1.0f * healthNotification.CurrentHealth / healthNotification.MaxHealth;
         }
 
