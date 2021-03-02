@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using UnityEngine;
 
 namespace Assets.Utils
@@ -16,7 +17,8 @@ namespace Assets.Utils
 
         public void Notify(T evt)
         {
-            foreach (var subscriber in Subscribers)
+            // Note: ToList() Subscribers so we don't throw an exception if it is modified while iterating
+            foreach (var subscriber in Subscribers.ToList())
             {
                 try
                 {

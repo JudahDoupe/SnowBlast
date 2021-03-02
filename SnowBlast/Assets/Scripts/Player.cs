@@ -12,11 +12,9 @@ public class Player : MonoBehaviour
     private int LastAttackFrame = -1;
     private GameObject LockOnTarget = null;
     private IDisposable LockOnDispose = null;
-
-    // Start is called before the first frame update
-    void Start()
-    {
-    }
+    private bool SwitchLockOnBumped = false;
+    private const float BumpTrigger = 0.5f;
+    private const float BumpReset = 0.1f;
 
     public void OnMoveUpDown(InputValue input)
     {
@@ -56,12 +54,21 @@ public class Player : MonoBehaviour
 
     public void OnSwitchLockOn(InputValue input)
     {
-        if (LastAttackFrame == Time.frameCount) return;
-        LastAttackFrame = Time.frameCount;
-
         var direction = input.Get<Vector2>();
 
-        if (direction.magnitude < 0.5f) return;
+        if (SwitchLockOnBumped)
+        {
+            if (direction.magnitude < BumpReset)
+            {
+                SwitchLockOnBumped = false;
+            }
+
+            return;
+        }
+
+        if (direction.magnitude <= BumpTrigger) return;
+
+        SwitchLockOnBumped = true;
 
         if (LockOnTarget == null) return;
 
@@ -75,7 +82,45 @@ public class Player : MonoBehaviour
 
         var ray = new Ray(startingPoint, direction);
 
-        LockOnTarget = otherEnemies.MinBy(enemy => Vector3.Cross(ray.direction, enemy.transform.position - ray.origin).magnitude);
+        var newTarget = otherEnemies.MinBy(enemy => Vector3.Cross(ray.direction, enemy.transform.position - ray.origin).magnitude);
+
+        SetLockOnTarget(newTarget);
+    }
+
+    private void StopLockOn()
+    {
+        LockOnDispose?.Dispose();
+        LockOnDispose = null;
+        LockOnTarget = null;
+    }
+
+    private void SetLockOnTarget(GameObject newTarget)
+    {
+        if (LockOnTarget == newTarget) return;
+
+        StopLockOn();
+
+        if (newTarget == null) return;
+        LockOnTarget = newTarget;
+
+        var indicator = LockOnTarget.GetComponentInChildren<EnemyInfoDisplay>();
+        indicator.StartLockOn();
+
+        var enemyHealth = LockOnTarget.GetComponentInChildren<Health>();
+
+        var tempDispose = enemyHealth.Subscribe(hn =>
+        {
+            if (hn.CurrentHealth <= 0)
+            {
+                SetLockOnTarget(null);
+            }
+        });
+
+        LockOnDispose = new ActionDisposer(() =>
+        {
+            tempDispose.Dispose();
+            indicator.StopLockOn();
+        });
     }
 
     public void OnToggleLockOn()
@@ -85,32 +130,12 @@ public class Player : MonoBehaviour
 
         if (LockOnTarget == null)
         {
-            // Find the closest enemy and lock onto them.
             var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
-
-            LockOnTarget = arenaController.Enemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, gameObject.transform.position));
-
-            var indicator = LockOnTarget.GetComponentInChildren<EnemyInfoDisplay>();
-            indicator.StartLockOn();
-
-            var enemyHealth = LockOnTarget.GetComponentInChildren<Health>();
-
-            LockOnDispose = enemyHealth.Subscribe(hn =>
-            {
-                if (hn.CurrentHealth <= 0)
-                {
-                    LockOnTarget = null;
-                    LockOnDispose = null;
-                }
-            });
+            SetLockOnTarget(arenaController.Enemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, gameObject.transform.position)));
         }
         else
         {
-            var indicator = LockOnTarget.GetComponentInChildren<EnemyInfoDisplay>();
-            indicator.StopLockOn();
-            LockOnTarget = null;
-            LockOnDispose.Dispose();
-            LockOnDispose = null;
+            SetLockOnTarget(null);
         }
     }
 
