@@ -31,7 +31,7 @@ public class Player : MonoBehaviour
         moveVec = input.Get<Vector2>();
         if (LockOnTarget == null)
         {
-            var lookPosition = gameObject.transform.position + new Vector3(moveVec.x, 0, moveVec.y) * Speed;
+            var lookPosition = gameObject.transform.position + Quaternion.AngleAxis(45, Vector3.up) * moveVec.XZ();
             gameObject.transform.LookAt(lookPosition);
         }
     }
@@ -72,17 +72,30 @@ public class Player : MonoBehaviour
 
         if (LockOnTarget == null) return;
 
-        // Find the enemy that's closest relative to current selection and angle of stick
         var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
-        var otherEnemies = arenaController.Enemies.Where(enemy => enemy != LockOnTarget).ToList();
+        var targetPosition = LockOnTarget.transform.position.XZ();
+        var otherEnemies = arenaController.Enemies
+            .Where(enemy => enemy != LockOnTarget)
+            .Select(enemy =>
+            {
+                var angle = Vector2.Angle(direction,
+                    enemy.transform.position.XZ() - targetPosition);
+                return new
+                {
+                    enemy,
+                    angle
+                };
+            })
+            .ToList();
         if (otherEnemies.Count == 0) return;
 
-        direction = direction.normalized;
-        var startingPoint = LockOnTarget.transform.position;
+        var partitions = otherEnemies
+            .GroupBy(it => it.angle < 90 || it.angle > 270, it => it.enemy)
+            .ToDictionary(it => it.Key, it => it.ToList());
 
-        var ray = new Ray(startingPoint, direction);
+        var lookAtEnemies = partitions.TryGetValue(true, out var temp) ? temp : partitions[false];
 
-        var newTarget = otherEnemies.MinBy(enemy => Vector3.Cross(ray.direction, enemy.transform.position - ray.origin).magnitude);
+        var newTarget = lookAtEnemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, LockOnTarget.transform.position));
 
         SetLockOnTarget(newTarget);
     }
