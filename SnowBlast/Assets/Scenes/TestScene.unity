@@ -757,7 +757,7 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 170bb74de093d5c46928f7535a62bbfd, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  MaxWaves: 2
+  MaxWaves: 3
   SpawnablePrefabs:
   - {fileID: 1819089588109213598, guid: d9044667ca144e546825f60812fadea2, type: 3}
   HealthBarPrefab: {fileID: 8003541062642992730, guid: 008593d52ef7059408c641c4039500e4, type: 3}

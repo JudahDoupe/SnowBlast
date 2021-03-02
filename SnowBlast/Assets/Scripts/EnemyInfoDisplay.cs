@@ -1,14 +1,15 @@
-﻿using Assets.Utils;
-using FluentAssertions;
+﻿using FluentAssertions;
 using UnityEngine;
-using UnityEngine.Assertions;
-using UnityEngine.PlayerLoop;
 using UnityEngine.UI;
 
 namespace Assets.Scripts
 {
-    public class EnemyHealthBar : MonoBehaviour
+    public class EnemyInfoDisplay : MonoBehaviour
     {
+        private Slider HealthBarSlider => gameObject.transform.Find("EnemyHealthBar").GetComponent<Slider>();
+        private Transform LockOnIndicator => gameObject.transform.Find("LockOnIndicator");
+        private int LockOnRotationSpeed = 2;
+
         public void SetParent(GameObject parent)
         {
             var targetHealth = parent.GetComponent<Health>();
@@ -22,15 +23,25 @@ namespace Assets.Scripts
             gameObject.transform.localPosition = new Vector3(0, parentObjectHeight + myHeight + 1, 0);
         }
 
+        public void StartLockOn()
+        {
+            LockOnIndicator.gameObject.SetActive(true);
+        }
+
+        public void StopLockOn()
+        {
+            LockOnIndicator.gameObject.SetActive(false);
+        }
+
         public void Update()
         {
             transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
+            LockOnIndicator.Rotate(Vector3.up * LockOnRotationSpeed);
         }
 
         void UpdateHealthBar(HealthNotification healthNotification)
         {
-            var slider = gameObject.transform.Find("EnemyHealthBar").GetComponent<Slider>();
-            slider.value = 1.0f * healthNotification.CurrentHealth / healthNotification.MaxHealth;
+            HealthBarSlider.value = 1.0f * healthNotification.CurrentHealth / healthNotification.MaxHealth;
         }
 
         Bounds GetMaxBounds(GameObject g)

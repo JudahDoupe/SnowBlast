@@ -87,12 +87,12 @@ GameObject:
   - component: {fileID: 3691102072102122821}
   - component: {fileID: 1131806045891794421}
   m_Layer: 0
-  m_Name: Text (TMP)
+  m_Name: LockOnIndicator
   m_TagString: Untagged
   m_Icon: {fileID: 0}
   m_NavMeshLayer: 0
   m_StaticEditorFlags: 0
-  m_IsActive: 1
+  m_IsActive: 0
 --- !u!224 &4337491603659258336
 RectTransform:
   m_ObjectHideFlags: 0
@@ -472,6 +472,6 @@ MonoBehaviour:
   m_GameObject: {fileID: 8003541062642992730}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: b80a8cc94051a5447890283094d3d622, type: 3}
+  m_Script: {fileID: 11500000, guid: 8f6bd596226e7dd41b7dc31a5a43b848, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 

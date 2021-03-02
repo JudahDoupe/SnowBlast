@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using UnityEngine;
@@ -14,7 +15,7 @@ namespace Assets.Scripts
         public GameObject[] SpawnablePrefabs;
         public GameObject HealthBarPrefab;
 
-        private readonly List<GameObject> ActiveEnemies = new List<GameObject>();
+        private readonly List<GameObject> SpawnedEnemies = new List<GameObject>();
 
         private enum ArenaState
         {
@@ -31,6 +32,7 @@ namespace Assets.Scripts
         private ArenaState State = ArenaState.ShowWaveAnnouncement;
         private float WaveStartTime;
         private int Wave;
+        public IEnumerable<GameObject> Enemies => SpawnedEnemies.Where(it => it.activeSelf);
 
         public ArenaController()
         {
@@ -61,7 +63,7 @@ namespace Assets.Scripts
         private ArenaState ShowWaveAnnouncement()
         {
             Wave += 1;
-            ActiveEnemies.Clear();
+            SpawnedEnemies.Clear();
             var announcement = FindObjectOfType<WaveAnnouncement>(true);
             announcement.Say($"Wave {Wave} - Start!");
             WaveStartTime = Time.fixedTime + announcement.TotalTime;
@@ -82,8 +84,8 @@ namespace Assets.Scripts
                     var enemy = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(x, 0, z),
                         Quaternion.identity);
                     var healthBar = Instantiate(HealthBarPrefab);
-                    healthBar.GetComponent<EnemyHealthBar>().SetParent(enemy);
-                    ActiveEnemies.Add(enemy);
+                    healthBar.GetComponent<EnemyInfoDisplay>().SetParent(enemy);
+                    SpawnedEnemies.Add(enemy);
                 }
                 
                 return ArenaState.InWave;
@@ -99,7 +101,7 @@ namespace Assets.Scripts
             {
                 return ArenaState.GameOver;
             }
-            if (ActiveEnemies.All(enemy => !enemy.gameObject.activeSelf))
+            if (SpawnedEnemies.All(enemy => !enemy.gameObject.activeSelf))
             {
                 if (Wave >= MaxWaves) return ArenaState.WinState;
                 return ArenaState.ShowWaveAnnouncement;
