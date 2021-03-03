@@ -46,7 +46,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "ToggleLockOn",
+                    "name": "CancelLockOn",
                     "type": "Button",
                     "id": "46a2b7bb-0acc-44c9-bf53-c26cab580330",
                     "expectedControlType": "Button",
@@ -54,7 +54,7 @@
                     "interactions": ""
                 },
                 {
-                    "name": "SwitchLockOn",
+                    "name": "RightStick",
                     "type": "Value",
                     "id": "159618ba-812f-4995-ad43-67fb0ff03d07",
                     "expectedControlType": "Vector2",
@@ -257,7 +257,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "ToggleLockOn",
+                    "action": "CancelLockOn",
                     "isComposite": false,
                     "isPartOfComposite": false
                 },
@@ -268,7 +268,7 @@
                     "interactions": "",
                     "processors": "",
                     "groups": "",
-                    "action": "SwitchLockOn",
+                    "action": "RightStick",
                     "isComposite": false,
                     "isPartOfComposite": false
                 }

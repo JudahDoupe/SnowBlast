@@ -18,5 +18,10 @@ namespace Assets.Utils
                 .Aggregate((current, next) => current.value <= next.value ? current : next)
                 .item;
         }
+
+        public static TValue GetValueOrDefault<TKey, TValue>(this Dictionary<TKey, TValue> self, TKey key)
+        {
+            return self.TryGetValue(key, out var value) ? value : default;
+        }
     }
 }

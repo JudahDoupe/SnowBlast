@@ -3,7 +3,9 @@ using System.Linq;
 using Assets.Scripts;
 using Assets.Utils;
 using UnityEngine;
+using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
+using System.Collections.Generic;
 
 public class Player : MonoBehaviour
 {
@@ -12,7 +14,7 @@ public class Player : MonoBehaviour
     private int LastAttackFrame = -1;
     private GameObject LockOnTarget = null;
     private IDisposable LockOnDispose = null;
-    private bool SwitchLockOnBumped = false;
+    private bool RightStickBumped = false;
     private const float BumpTrigger = 0.5f;
     private const float BumpReset = 0.1f;
 
@@ -31,7 +33,7 @@ public class Player : MonoBehaviour
         moveVec = input.Get<Vector2>();
         if (LockOnTarget == null)
         {
-            var lookPosition = gameObject.transform.position + Quaternion.AngleAxis(45, Vector3.up) * moveVec.XZ();
+            var lookPosition = gameObject.transform.position + Find.CameraRotation * moveVec.XZ();
             gameObject.transform.LookAt(lookPosition);
         }
     }
@@ -52,15 +54,15 @@ public class Player : MonoBehaviour
         damageSphere.Attack();
     }
 
-    public void OnSwitchLockOn(InputValue input)
+    public void OnRightStick(InputValue input)
     {
-        var direction = input.Get<Vector2>();
+        var direction = (Find.CameraRotation * input.Get<Vector2>().XZ()).XZ();
 
-        if (SwitchLockOnBumped)
+        if (RightStickBumped)
         {
             if (direction.magnitude < BumpReset)
             {
-                SwitchLockOnBumped = false;
+                RightStickBumped = false;
             }
 
             return;
@@ -68,34 +70,42 @@ public class Player : MonoBehaviour
 
         if (direction.magnitude <= BumpTrigger) return;
 
-        SwitchLockOnBumped = true;
-
-        if (LockOnTarget == null) return;
+        RightStickBumped = true;
 
         var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
-        var targetPosition = LockOnTarget.transform.position.XZ();
+        var originObject = LockOnTarget ?? Find.ThePlayer ?? throw new ApplicationException("No locked on enemy or player!");
+        var initialPosition = originObject.transform.position.XZ();
         var otherEnemies = arenaController.Enemies
             .Where(enemy => enemy != LockOnTarget)
             .Select(enemy =>
             {
                 var angle = Vector2.Angle(direction,
-                    enemy.transform.position.XZ() - targetPosition);
+                    enemy.transform.position.XZ() - initialPosition);
+                var facing = angle switch
+                {
+                    _ when angle < 45 => Facing.Front,
+                    _ when angle < 135 => Facing.Side,
+                    _ => Facing.Rear
+                };
                 return new
                 {
                     enemy,
-                    angle
+                    facing
                 };
             })
             .ToList();
+
         if (otherEnemies.Count == 0) return;
 
         var partitions = otherEnemies
-            .GroupBy(it => it.angle < 90 || it.angle > 270, it => it.enemy)
+            .GroupBy(it => it.facing, it => it.enemy)
             .ToDictionary(it => it.Key, it => it.ToList());
 
-        var lookAtEnemies = partitions.TryGetValue(true, out var temp) ? temp : partitions[false];
+        var lookAtEnemies = partitions.GetValueOrDefault(Facing.Front) ?? 
+                            partitions.GetValueOrDefault(Facing.Side) ?? 
+                            partitions[Facing.Rear];
 
-        var newTarget = lookAtEnemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, LockOnTarget.transform.position));
+        var newTarget = lookAtEnemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, originObject.transform.position));
 
         SetLockOnTarget(newTarget);
     }
@@ -136,20 +146,9 @@ public class Player : MonoBehaviour
         });
     }
 
-    public void OnToggleLockOn()
+    public void OnCancelLockOn()
     {
-        if (LastAttackFrame == Time.frameCount) return;
-        LastAttackFrame = Time.frameCount;
-
-        if (LockOnTarget == null)
-        {
-            var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
-            SetLockOnTarget(arenaController.Enemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, gameObject.transform.position)));
-        }
-        else
-        {
-            SetLockOnTarget(null);
-        }
+        StopLockOn();
     }
 
     void FixedUpdate()
@@ -157,7 +156,7 @@ public class Player : MonoBehaviour
         if (moveVec.x != 0 || moveVec.y != 0)
         {
             gameObject.GetComponent<Rigidbody>()
-                .velocity = Quaternion.AngleAxis(45, Vector3.up) * new Vector3(moveVec.x, 0, moveVec.y) * Speed;
+                .velocity = Find.CameraRotation * new Vector3(moveVec.x, 0, moveVec.y) * Speed;
         }
 
         if (LockOnTarget != null)
@@ -176,5 +175,12 @@ public class Player : MonoBehaviour
                 gameObject.transform.LookAt(x);
             }
         }
+    }
+
+    public enum Facing
+    {
+        Front,
+        Side,
+        Rear
     }
 }
