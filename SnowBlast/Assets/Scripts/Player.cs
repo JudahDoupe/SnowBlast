@@ -20,11 +20,26 @@ public class Player : MonoBehaviour
 
     private const float DashVelocity = 50.0f;
     private const float DashDurationSeconds = 0.2f;
-    private const float DashRechargeSeconds = 0.5f;
+    private const float DashRechargeSeconds = 0.2f;
 
     private float? DashStarted;
     private float DashEnded = 0.0f;
     private Vector3 DashVector;
+
+    public void Start()
+    {
+        var emitter = GetComponentInChildren<ParticleSystem>(true);
+        var main = emitter.main;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(DashDurationSeconds);
+        SetEmitter(false);
+    }
+
+    private void SetEmitter(bool active)
+    {
+        var emitter = GetComponentInChildren<ParticleSystem>(true);
+        if(active) emitter.Play();
+        else emitter.Stop();
+    }
 
     public void OnMoveUpDown(InputValue input)
     {
@@ -164,6 +179,8 @@ public class Player : MonoBehaviour
         if (DashStarted != null) return;
         if (Time.fixedTime < DashEnded + DashRechargeSeconds) return;
 
+        SetEmitter(true);
+
         DashStarted = Time.fixedTime;
         DashVector = MoveVector.normalized;
     }
@@ -174,6 +191,8 @@ public class Player : MonoBehaviour
         {
             if (Time.fixedTime >= DashStarted + DashDurationSeconds)
             {
+                DashEnded = Time.fixedTime;
+                SetEmitter(false);
                 DashStarted = null;
             }
             else

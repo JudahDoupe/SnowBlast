@@ -1168,10 +1168,6 @@ PrefabInstance:
   m_Modification:
     m_TransformParent: {fileID: 0}
     m_Modifications:
-    - target: {fileID: 1201868172, guid: fea96b8bc9b07014c8bd7f533cbdd672, type: 3}
-      propertyPath: Invulnerable
-      value: 1
-      objectReference: {fileID: 0}
     - target: {fileID: 6069840109820139744, guid: fea96b8bc9b07014c8bd7f533cbdd672, type: 3}
       propertyPath: m_Name
       value: Player
@@ -1219,10 +1215,6 @@ PrefabInstance:
     - target: {fileID: 6069840109820139745, guid: fea96b8bc9b07014c8bd7f533cbdd672, type: 3}
       propertyPath: m_LocalEulerAnglesHint.z
       value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 6069840110391805464, guid: fea96b8bc9b07014c8bd7f533cbdd672, type: 3}
-      propertyPath: Damage
-      value: 500
       objectReference: {fileID: 0}
     m_RemovedComponents: []
   m_SourcePrefab: {fileID: 100100000, guid: fea96b8bc9b07014c8bd7f533cbdd672, type: 3}
