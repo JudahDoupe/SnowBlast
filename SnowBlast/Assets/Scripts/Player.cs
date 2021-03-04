@@ -10,7 +10,7 @@ using System.Collections.Generic;
 public class Player : MonoBehaviour
 {
     public float Speed;
-    private Vector2 moveVec = new Vector2(0, 0);
+    private Vector3 MoveVector = new Vector3(0, 0, 0);
     private int LastAttackFrame = -1;
     private GameObject LockOnTarget = null;
     private IDisposable LockOnDispose = null;
@@ -18,22 +18,30 @@ public class Player : MonoBehaviour
     private const float BumpTrigger = 0.5f;
     private const float BumpReset = 0.1f;
 
+    private const float DashVelocity = 50.0f;
+    private const float DashDurationSeconds = 0.2f;
+    private const float DashRechargeSeconds = 0.5f;
+
+    private float? DashStarted;
+    private float DashEnded = 0.0f;
+    private Vector3 DashVector;
+
     public void OnMoveUpDown(InputValue input)
     {
-        moveVec = new Vector2(moveVec.x, input.Get<Vector2>().y);
+        MoveVector = new Vector3(MoveVector.x, 0, input.Get<Vector2>().y);
     }
 
     public void OnMoveRightLeft(InputValue input)
     {
-        moveVec = new Vector2(input.Get<Vector2>().x, moveVec.y);
+        MoveVector = new Vector3(input.Get<Vector2>().x, 0, MoveVector.z);
     }
 
     public void OnLeftStick(InputValue input)
     {
-        moveVec = input.Get<Vector2>();
+        MoveVector = input.Get<Vector2>().ToVector3XZ();
         if (LockOnTarget == null)
         {
-            var lookPosition = gameObject.transform.position + Find.CameraRotation * moveVec.XZ();
+            var lookPosition = gameObject.transform.position + Find.CameraRotation * MoveVector;
             gameObject.transform.LookAt(lookPosition);
         }
     }
@@ -56,7 +64,7 @@ public class Player : MonoBehaviour
 
     public void OnRightStick(InputValue input)
     {
-        var direction = (Find.CameraRotation * input.Get<Vector2>().XZ()).XZ();
+        var direction = (Find.CameraRotation * input.Get<Vector2>().ToVector3XZ()).ToVector2XZ();
 
         if (RightStickBumped)
         {
@@ -74,13 +82,13 @@ public class Player : MonoBehaviour
 
         var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
         var originObject = LockOnTarget ?? Find.ThePlayer ?? throw new ApplicationException("No locked on enemy or player!");
-        var initialPosition = originObject.transform.position.XZ();
+        var initialPosition = originObject.transform.position.ToVector2XZ();
         var otherEnemies = arenaController.Enemies
             .Where(enemy => enemy != LockOnTarget)
             .Select(enemy =>
             {
                 var angle = Vector2.Angle(direction,
-                    enemy.transform.position.XZ() - initialPosition);
+                    enemy.transform.position.ToVector2XZ() - initialPosition);
                 var facing = angle switch
                 {
                     _ when angle < 45 => Facing.Front,
@@ -151,12 +159,33 @@ public class Player : MonoBehaviour
         StopLockOn();
     }
 
+    public void OnDash()
+    {
+        if (DashStarted != null) return;
+        if (Time.fixedTime < DashEnded + DashRechargeSeconds) return;
+
+        DashStarted = Time.fixedTime;
+        DashVector = MoveVector.normalized;
+    }
+
     void FixedUpdate()
     {
-        if (moveVec.x != 0 || moveVec.y != 0)
+        if (DashStarted != null)
+        {
+            if (Time.fixedTime >= DashStarted + DashDurationSeconds)
+            {
+                DashStarted = null;
+            }
+            else
+            {
+                gameObject.GetComponent<Rigidbody>()
+                    .velocity = Find.CameraRotation * DashVector * DashVelocity;
+            }
+        }
+        else if (MoveVector.magnitude > 0)
         {
             gameObject.GetComponent<Rigidbody>()
-                .velocity = Find.CameraRotation * new Vector3(moveVec.x, 0, moveVec.y) * Speed;
+                .velocity = Find.CameraRotation * MoveVector * Speed;
         }
 
         if (LockOnTarget != null)
