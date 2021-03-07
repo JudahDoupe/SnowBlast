@@ -27,7 +27,7 @@
                     "id": "2e02c2ac-11d3-4aa8-9622-8a046ea74829",
                     "expectedControlType": "Button",
                     "processors": "",
-                    "interactions": ""
+                    "interactions": "Press(behavior=2)"
                 },
                 {
                     "name": "MoveRightLeft",
@@ -283,7 +283,7 @@
                 {
                     "name": "",
                     "id": "6aa303ab-a560-4653-9e12-98903dcd6e5a",
-                    "path": "<Gamepad>/buttonEast",
+                    "path": "<Gamepad>/rightTrigger",
                     "interactions": "",
                     "processors": "",
                     "groups": "",

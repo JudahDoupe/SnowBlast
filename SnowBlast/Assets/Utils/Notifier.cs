@@ -47,5 +47,10 @@ namespace Assets.Utils
             Subscribers.Clear();
             Disposed = true;
         }
+
+        public void Clear()
+        {
+            Subscribers.Clear();
+        }
     }
 }

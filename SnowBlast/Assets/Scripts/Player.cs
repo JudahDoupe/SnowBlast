@@ -25,6 +25,8 @@ public class Player : MonoBehaviour
     private float? DashStarted;
     private float DashEnded = 0.0f;
     private Vector3 DashVector;
+    private AimingLines AimingLines;
+    private bool Aiming => AimingLines.gameObject.activeSelf;
 
     public void Start()
     {
@@ -32,6 +34,7 @@ public class Player : MonoBehaviour
         var main = emitter.main;
         main.startLifetime = new ParticleSystem.MinMaxCurve(DashDurationSeconds);
         SetEmitter(false);
+        AimingLines = FindObjectOfType<LineRenderer>(true).GetComponent<AimingLines>();
     }
 
     private void SetEmitter(bool active)
@@ -54,11 +57,6 @@ public class Player : MonoBehaviour
     public void OnLeftStick(InputValue input)
     {
         MoveVector = input.Get<Vector2>().ToVector3XZ();
-        if (LockOnTarget == null)
-        {
-            var lookPosition = gameObject.transform.position + Find.CameraRotation * MoveVector;
-            gameObject.transform.LookAt(lookPosition);
-        }
     }
 
     public void OnPrimaryAttack()
@@ -69,12 +67,32 @@ public class Player : MonoBehaviour
         gun.Attack();
     }
 
-    public void OnSecondaryAttack()
+    public void OnSecondaryAttack(InputValue action)
     {
         if (LastAttackFrame == Time.frameCount) return;
         LastAttackFrame = Time.frameCount;
-        var damageSphere = gameObject.GetComponentInChildren<DamageSphere>();
-        damageSphere.Attack();
+
+        if (action.isPressed && DashStarted == null)
+        {
+            AimingLines.transform.position = transform.position;
+            AimingLines.transform.rotation = transform.rotation;
+            AimingLines.StartAnimation(() =>
+            {
+                var range = AimingLines.Range;
+                var origin = new Vector3(transform.position.x, 1.01f, transform.position.z);
+                if (Physics.Raycast(origin, transform.TransformDirection(Vector3.forward), out var hit))
+                {
+                    if (hit.distance <= range && hit.collider.gameObject.UltimateParent().GetComponent<Health>() is {} health)
+                    {
+                        health.ApplyDamage(100, Allegiance.Player);
+                    }
+                }
+            });
+        }
+        else
+        {
+            AimingLines.StopAnimation();
+        }
     }
 
     public void OnRightStick(InputValue input)
@@ -176,6 +194,7 @@ public class Player : MonoBehaviour
 
     public void OnDash()
     {
+        StopAiming();
         if (DashStarted != null) return;
         if (Time.fixedTime < DashEnded + DashRechargeSeconds) return;
 
@@ -183,6 +202,11 @@ public class Player : MonoBehaviour
 
         DashStarted = Time.fixedTime;
         DashVector = MoveVector.normalized;
+    }
+
+    private void StopAiming()
+    {
+        AimingLines.StopAnimation();
     }
 
     void FixedUpdate()
@@ -200,6 +224,10 @@ public class Player : MonoBehaviour
                 gameObject.GetComponent<Rigidbody>()
                     .velocity = Find.CameraRotation * DashVector * DashVelocity;
             }
+        }
+        else if (Aiming)
+        {
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;;
         }
         else if (MoveVector.magnitude > 0)
         {
@@ -222,6 +250,16 @@ public class Player : MonoBehaviour
                 x.y = transform.position.y;
                 gameObject.transform.LookAt(x);
             }
+        }
+        else
+        {
+            var lookPosition = gameObject.transform.position + Find.CameraRotation * MoveVector;
+            gameObject.transform.LookAt(lookPosition);
+        }
+
+        if (Aiming)
+        {
+            AimingLines.transform.rotation = transform.rotation;
         }
     }
 
