@@ -111,6 +111,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Scripts\AimingLines.cs" />
     <Compile Include="Assets\Utils\MathInDegrees.cs" />
+    <Compile Include="Assets\Scripts\RotateTowardsCamera.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

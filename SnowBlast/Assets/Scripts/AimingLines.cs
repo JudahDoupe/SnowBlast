@@ -6,13 +6,14 @@ using UnityEngine;
 
 public class AimingLines : MonoBehaviour
 {
-    public float AnimationDuration = 0.8f;
+    public float AnimationDuration = 0.5f;
     public float StartingAngle = 90;
-    public float Range = 11.0f;
+    public float Range = 12.0f;
+    
 
     private LineRenderer LineRenderer => GetComponent<LineRenderer>();
     private readonly Notifier<bool> NotifierImplementation = new Notifier<bool>();
-
+    
     private float? AnimationStartTime = null;
 
     // Start is called before the first frame update

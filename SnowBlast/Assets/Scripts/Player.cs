@@ -1,4 +1,5 @@
 using System;
+using System.Collections;
 using System.Linq;
 using Assets.Scripts;
 using Assets.Utils;
@@ -27,6 +28,8 @@ public class Player : MonoBehaviour
     private Vector3 DashVector;
     private AimingLines AimingLines;
     private bool Aiming => AimingLines.gameObject.activeSelf;
+    private GameObject SpeechBubble => gameObject.transform.Find("SpeechBubble").gameObject;
+
 
     public void Start()
     {
@@ -84,7 +87,8 @@ public class Player : MonoBehaviour
                 {
                     if (hit.distance <= range && hit.collider.gameObject.UltimateParent().GetComponent<Health>() is {} health)
                     {
-                        health.ApplyDamage(100, Allegiance.Player);
+                        StartCoroutine(Bang());
+                        health.ApplyDamage(300, Allegiance.Player);
                     }
                 }
             });
@@ -93,6 +97,13 @@ public class Player : MonoBehaviour
         {
             AimingLines.StopAnimation();
         }
+    }
+
+    IEnumerator Bang()
+    {
+        SpeechBubble.SetActive(true);
+        yield return new WaitForSeconds(1.0f);
+        SpeechBubble.SetActive(false);
     }
 
     public void OnRightStick(InputValue input)

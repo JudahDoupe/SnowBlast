@@ -35,7 +35,6 @@ namespace Assets.Scripts
 
         public void Update()
         {
-            transform.rotation = Quaternion.LookRotation(-Camera.main.transform.forward, Camera.main.transform.up);
             LockOnIndicator.Rotate(Vector3.up * LockOnRotationSpeed);
         }
 

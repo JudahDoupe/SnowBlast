@@ -374,6 +374,7 @@ GameObject:
   - component: {fileID: 4913813422841006349}
   - component: {fileID: 5597750131459924874}
   - component: {fileID: 5209060782834467851}
+  - component: {fileID: 4522235868216731368}
   m_Layer: 5
   m_Name: EnemyInfo
   m_TagString: Untagged
@@ -445,7 +446,7 @@ MonoBehaviour:
   m_FallbackScreenDPI: 96
   m_DefaultSpriteDPI: 96
   m_DynamicPixelsPerUnit: 1
-  m_PresetInfoIsWorld: 1
+  m_PresetInfoIsWorld: 0
 --- !u!114 &5597750131459924874
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -473,5 +474,17 @@ MonoBehaviour:
   m_Enabled: 1
   m_EditorHideFlags: 0
   m_Script: {fileID: 11500000, guid: 8f6bd596226e7dd41b7dc31a5a43b848, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &4522235868216731368
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 8003541062642992730}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: efed4fc407651a4499224e57f8df49a7, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
