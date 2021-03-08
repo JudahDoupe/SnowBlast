@@ -45,6 +45,20 @@ public class Player : MonoBehaviour
         var emitter = GetComponentInChildren<ParticleSystem>(true);
         if(active) emitter.Play();
         else emitter.Stop();
+
+        if (active)
+        {
+            var emitterTransform = emitter.GetComponent<Transform>();
+
+            var angle = (LockOnTarget, MoveVector.x < 0) switch
+            {
+                (null, _) => 180,
+                (_, true) => 90,
+                _ => -90
+            };
+
+            emitterTransform.rotation = transform.rotation * Quaternion.AngleAxis(angle, new Vector3(0, 1, 0));
+        }
     }
 
     public void OnMoveUpDown(InputValue input)
@@ -208,6 +222,7 @@ public class Player : MonoBehaviour
         StopAiming();
         if (DashStarted != null) return;
         if (Time.fixedTime < DashEnded + DashRechargeSeconds) return;
+        if (MoveVector.magnitude < 0.05) return;
 
         SetEmitter(true);
 
