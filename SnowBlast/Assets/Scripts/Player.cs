@@ -7,6 +7,7 @@ using UnityEngine;
 using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
 using System.Collections.Generic;
+using FluentAssertions;
 
 public class Player : MonoBehaviour
 {
@@ -37,7 +38,11 @@ public class Player : MonoBehaviour
         var main = emitter.main;
         main.startLifetime = new ParticleSystem.MinMaxCurve(DashDurationSeconds);
         SetEmitter(false);
-        AimingLines = FindObjectOfType<LineRenderer>(true).GetComponent<AimingLines>();
+
+        var children = Enumerable.Range(0, gameObject.transform.childCount)
+            .Select(n => gameObject.transform.GetChild(n)).ToList();
+
+        AimingLines = gameObject.GetComponentInChildren<AimingLines>(true);
     }
 
     private void SetEmitter(bool active)
@@ -139,6 +144,7 @@ public class Player : MonoBehaviour
         RightStickBumped = true;
 
         var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
+        if (!arenaController) return;
         var originObject = LockOnTarget ?? Find.ThePlayer ?? throw new ApplicationException("No locked on enemy or player!");
         var initialPosition = originObject.transform.position.ToVector2XZ();
         var otherEnemies = arenaController.Enemies
