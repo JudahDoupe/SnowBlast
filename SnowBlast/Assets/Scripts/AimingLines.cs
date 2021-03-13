@@ -31,7 +31,6 @@ public class AimingLines : MonoBehaviour
     {
         StartCoroutine(Animation
             .Then(() => action())
-            .Prewarm()
             .Start());
     }
 

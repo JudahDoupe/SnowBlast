@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 
+#nullable  enable
 namespace Assets.Utils.JBehavior
 {
     public class JBehaviorSet
@@ -21,9 +22,9 @@ namespace Assets.Utils.JBehavior
             Behaviors = new[] {action};
         }
 
-        public static JBehaviorSet Animate(float duration, Action<float> callback, float[] curve = null)
+        public static JBehaviorSet Animate(float duration, Action<float> callback, float[]? curve = null)
         {
-            return new JBehaviorSet(new JAnimationBehavior(duration, callback, curve));
+            return new JBehaviorSet(new JAnimationBehavior(duration, callback, curve ?? JCurve.Linear));
         }
 
         public static JBehaviorSet Animate(Action callback)
@@ -31,9 +32,9 @@ namespace Assets.Utils.JBehavior
             return new JBehaviorSet(new JActionBehavior(callback));
         }
 
-        public JBehaviorSet Then(float duration, Action<float> callback, float[] curve = null)
+        public JBehaviorSet Then(float duration, Action<float> callback, float[]? curve = null)
         {
-            return Append(new JAnimationBehavior(duration, callback, curve));
+            return Append(new JAnimationBehavior(duration, callback, curve ?? JCurve.Linear));
         }
 
         public JBehaviorSet Then(Action callback)
@@ -41,7 +42,7 @@ namespace Assets.Utils.JBehavior
             return Append(new JActionBehavior(callback));
         }
 
-        public JBehaviorSet Prewarm()
+        private JBehaviorSet Prewarm()
         {
             var remainder = Behaviors.SkipWhile(b =>
             {
@@ -57,6 +58,11 @@ namespace Assets.Utils.JBehavior
         }
 
         public IEnumerator Start()
+        {
+            return Prewarm().StartEnumeration();
+        }
+
+        private IEnumerator StartEnumeration()
         {
             InProgress = true;
 

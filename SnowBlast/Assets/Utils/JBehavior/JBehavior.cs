@@ -29,12 +29,14 @@ namespace Assets.Utils.JBehavior
         public IEnumerator Start()
         {
             var timeIn = Time.fixedTime;
-            while (Time.fixedTime <= timeIn + Duration)
+            while (Time.fixedTime < timeIn + Duration)
             {
                 var ratio = (Time.fixedTime - timeIn) / Duration;
                 Callback(JCurve.CurveRatio(ratio, Curve));
                 yield return new WaitForEndOfFrame();
             }
+
+            Callback(1.0f);
         }
     }
 

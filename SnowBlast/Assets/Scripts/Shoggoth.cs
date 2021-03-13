@@ -11,6 +11,7 @@ public class Shoggoth : MonoBehaviour
     private ParticleSystem SlimeTrail;
 
     private JBehaviorSet LurchBehavior;
+    private ShoggothAttackArm AttackArm;
 
     public Shoggoth()
     {
@@ -27,51 +28,46 @@ public class Shoggoth : MonoBehaviour
     void Start()
     {
         SlimeTrail = transform.Find("SlimeTrail").GetComponent<ParticleSystem>();
+        AttackArm = GetComponentInChildren<ShoggothAttackArm>();
     }
 
     void Update()
     {
-        var attackArm = GetComponentInChildren<ShoggothAttackArm>();
-        if (attackArm.InProgress) return;
-
         var player = Find.ThePlayer;
-        if (!LurchBehavior.InProgress && player != null)
+        
+        if (AttackArm.InProgress || LurchBehavior.InProgress || player == null) return;
+        
+        // Rotate toward player
+        var vec = transform.forward;
+        var dir = player.transform.position - transform.position;
+        var cross = Vector3.Cross(vec, dir);
+        var angle = Vector3.Angle(vec, dir);
+
+        // Rotate toward player
+        transform.rotation = transform.rotation *
+                             Quaternion.AngleAxis(Mathf.Min(angle, 1) * Mathf.Sign(cross.y), Vector3.up);
+
+        if (angle > 20)
         {
-            // Can rotate toward player
-            var vec = transform.forward;
-            var dir = player.transform.position - transform.position;
-            var cross = Vector3.Cross(vec, dir);
-            var angle = Vector3.Angle(vec, dir);
-
-            // Rotate toward player
-            transform.rotation = transform.rotation *
-                                 Quaternion.AngleAxis(Mathf.Min(angle, 1) * Mathf.Sign(cross.y), Vector3.up);
-
-            if (angle > 20)
-            {
-                StopLurch();
-                return;
-            }
+            StopMovement();
+            return;
         }
 
-        if (!LurchBehavior.InProgress)
+        if (Vector3.Distance(player.transform.position, transform.position) <= 7)
         {
-            if (player != null && Vector3.Distance(player.transform.position, transform.position) <= 7)
-            {
-                StopLurch();
-                attackArm.SwingArm();
-                return;
-            }
-            StartLurch();
+            StopMovement();
+            AttackArm.SwingArm();
+            return;
         }
+        StartLurch();
     }
 
     public void StartLurch()
     {
-        StartCoroutine(LurchBehavior.Prewarm().Start());
+        StartCoroutine(LurchBehavior.Start());
     }
 
-    public void StopLurch()
+    public void StopMovement()
     {
         StopAllCoroutines();
         SetVelocity(0);

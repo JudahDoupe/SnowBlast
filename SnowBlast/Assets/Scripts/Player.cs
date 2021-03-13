@@ -3,19 +3,18 @@ using System.Collections;
 using System.Linq;
 using Assets.Scripts;
 using Assets.Utils;
+using Assets.Utils.JBehavior;
 using UnityEngine;
-using UnityEngine.Assertions;
 using UnityEngine.InputSystem;
-using System.Collections.Generic;
-using FluentAssertions;
 
+#nullable enable
 public class Player : MonoBehaviour
 {
     public float Speed;
     private Vector3 MoveVector = new Vector3(0, 0, 0);
     private int LastAttackFrame = -1;
-    private GameObject LockOnTarget = null;
-    private IDisposable LockOnDispose = null;
+    private GameObject? LockOnTarget = null;
+    private IDisposable? LockOnDispose = null;
     private bool RightStickBumped = false;
     private const float BumpTrigger = 0.5f;
     private const float BumpReset = 0.1f;
@@ -24,46 +23,52 @@ public class Player : MonoBehaviour
     private const float DashDurationSeconds = 0.2f;
     private const float DashRechargeSeconds = 0.2f;
 
-    private float? DashStarted;
-    private float DashEnded = 0.0f;
-    private Vector3 DashVector;
-    private AimingLines AimingLines;
+    private AimingLines AimingLines = default!;
+    private ParticleSystem DashLines = default!;
     private bool Aiming => AimingLines.gameObject.activeSelf;
     private GameObject SpeechBubble => gameObject.transform.Find("SpeechBubble").gameObject;
 
+    private readonly JBehaviorSet DashAnimation;
+    private float DashEndTime;
+
+    public Player()
+    {
+        DashAnimation = JBehaviorSet.Animate(() =>
+            {
+                SetDashLines(MoveVector.normalized);
+                gameObject.GetComponent<Rigidbody>()
+                    .velocity = Find.CameraRotation * MoveVector.normalized * DashVelocity;
+            })
+            .Then(DashDurationSeconds, _ =>
+            {
+                Debug.Log("Hello world!");
+                gameObject.GetComponent<Rigidbody>()
+                    .velocity = Find.CameraRotation * MoveVector.normalized * DashVelocity;
+            })
+            .Then(() =>
+            {
+                DashLines.Stop();
+                gameObject.GetComponent<Rigidbody>()
+                    .velocity = Find.CameraRotation * MoveVector.normalized * 0;
+                DashEndTime = Time.fixedTime;
+            });
+    }
 
     public void Start()
     {
-        var emitter = GetComponentInChildren<ParticleSystem>(true);
-        var main = emitter.main;
-        main.startLifetime = new ParticleSystem.MinMaxCurve(DashDurationSeconds);
-        SetEmitter(false);
-
-        var children = Enumerable.Range(0, gameObject.transform.childCount)
-            .Select(n => gameObject.transform.GetChild(n)).ToList();
-
         AimingLines = gameObject.GetComponentInChildren<AimingLines>(true);
+        DashLines = GetComponentInChildren<ParticleSystem>(true);
+        var main = DashLines.main;
+        main.startLifetime = new ParticleSystem.MinMaxCurve(DashDurationSeconds);
+        DashLines.Stop();
     }
 
-    private void SetEmitter(bool active)
+    private void SetDashLines(Vector3 dashVector)
     {
-        var emitter = GetComponentInChildren<ParticleSystem>(true);
-        if(active) emitter.Play();
-        else emitter.Stop();
-
-        if (active)
-        {
-            var emitterTransform = emitter.GetComponent<Transform>();
-
-            var angle = (LockOnTarget, MoveVector.x < 0) switch
-            {
-                (null, _) => 180,
-                (_, true) => 90,
-                _ => -90
-            };
-
-            emitterTransform.rotation = transform.rotation * Quaternion.AngleAxis(angle, new Vector3(0, 1, 0));
-        }
+        var emitterTransform = DashLines.GetComponent<Transform>();
+        emitterTransform.LookAt(transform.position + Find.CameraRotation * -dashVector * 10);
+        
+        DashLines.Play();
     }
 
     public void OnMoveUpDown(InputValue input)
@@ -83,6 +88,7 @@ public class Player : MonoBehaviour
 
     public void OnPrimaryAttack()
     {
+        Debug.Log("Primary attack.");
         if (LastAttackFrame == Time.frameCount) return;
         LastAttackFrame = Time.frameCount;
         var gun = gameObject.GetComponentInChildren<Gun>();
@@ -94,7 +100,9 @@ public class Player : MonoBehaviour
         if (LastAttackFrame == Time.frameCount) return;
         LastAttackFrame = Time.frameCount;
 
-        if (action.isPressed && DashStarted == null)
+        if (DashAnimation.InProgress) return;
+
+        if (action.isPressed)
         {
             AimingLines.transform.position = transform.position;
             AimingLines.transform.rotation = transform.rotation;
@@ -189,7 +197,7 @@ public class Player : MonoBehaviour
         LockOnTarget = null;
     }
 
-    private void SetLockOnTarget(GameObject newTarget)
+    private void SetLockOnTarget(GameObject? newTarget)
     {
         if (LockOnTarget == newTarget) return;
 
@@ -225,15 +233,11 @@ public class Player : MonoBehaviour
 
     public void OnDash()
     {
-        StopAiming();
-        if (DashStarted != null) return;
-        if (Time.fixedTime < DashEnded + DashRechargeSeconds) return;
+        if (DashAnimation.InProgress) return;
+        if (Time.fixedTime < DashEndTime + DashRechargeSeconds) return;
         if (MoveVector.magnitude < 0.05) return;
-
-        SetEmitter(true);
-
-        DashStarted = Time.fixedTime;
-        DashVector = MoveVector.normalized;
+        StopAiming();
+        StartCoroutine(DashAnimation.Start());
     }
 
     private void StopAiming()
@@ -243,30 +247,18 @@ public class Player : MonoBehaviour
 
     void FixedUpdate()
     {
-        if (DashStarted != null)
-        {
-            if (Time.fixedTime >= DashStarted + DashDurationSeconds)
-            {
-                DashEnded = Time.fixedTime;
-                SetEmitter(false);
-                DashStarted = null;
-            }
-            else
-            {
-                gameObject.GetComponent<Rigidbody>()
-                    .velocity = Find.CameraRotation * DashVector * DashVelocity;
-            }
-        }
-        else if (Aiming)
-        {
-            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;;
-        }
-        else if (MoveVector.magnitude > 0)
-        {
-            gameObject.GetComponent<Rigidbody>()
-                .velocity = Find.CameraRotation * MoveVector * Speed;
-        }
+        UpdateVelocity();
+        UpdateFacing();
 
+        if (Aiming)
+        {
+            AimingLines.transform.rotation = transform.rotation;
+        }
+    }
+
+    private void UpdateFacing()
+    {
+        if (DashAnimation.InProgress) return;
         if (LockOnTarget != null)
         {
             var xyz = LockOnTarget.transform.position;
@@ -288,10 +280,19 @@ public class Player : MonoBehaviour
             var lookPosition = gameObject.transform.position + Find.CameraRotation * MoveVector;
             gameObject.transform.LookAt(lookPosition);
         }
+    }
 
+    private void UpdateVelocity()
+    {
+        if (DashAnimation.InProgress) return;
         if (Aiming)
         {
-            AimingLines.transform.rotation = transform.rotation;
+            gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
+        }
+        else if (MoveVector.magnitude > 0)
+        {
+            gameObject.GetComponent<Rigidbody>()
+                .velocity = Find.CameraRotation * MoveVector * Speed;
         }
     }
 
