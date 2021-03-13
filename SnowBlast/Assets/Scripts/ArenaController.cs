@@ -81,7 +81,8 @@ namespace Assets.Scripts
                     var distanceFromPlayer = Random.Range(5.0f, 10.0f);
                     var x = Mathf.Cos(angleFromPlayer) * distanceFromPlayer;
                     var z = Mathf.Sin(angleFromPlayer) * distanceFromPlayer;
-                    var enemy = Instantiate(SpawnablePrefabs[0], player.gameObject.transform.position + new Vector3(x, 0, z),
+                    var whichPrefab = Random.Range(0, SpawnablePrefabs.Length);
+                    var enemy = Instantiate(SpawnablePrefabs[whichPrefab], player.gameObject.transform.position + new Vector3(x, 0, z),
                         Quaternion.identity);
                     var healthBar = Instantiate(HealthBarPrefab);
                     healthBar.GetComponent<EnemyInfoDisplay>().SetParent(enemy);

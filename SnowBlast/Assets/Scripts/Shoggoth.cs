@@ -1,7 +1,5 @@
-using System;
-using System.Collections.Generic;
 using Assets.Utils;
-using Assets.Utils.MyAnimator;
+using Assets.Utils.JBehavior;
 using UnityEngine;
 
 public class Shoggoth : MonoBehaviour
@@ -10,11 +8,20 @@ public class Shoggoth : MonoBehaviour
     public float LurchMinSpeed = 0.5f;
     public float LurchDuration = 2f;
 
-    private float? LurchStartTime = null;
-
     private ParticleSystem SlimeTrail;
 
-    private bool UncancellableLurch => LurchStartTime is {} t && Time.fixedTime - t < LurchDuration;
+    private JBehaviorSet LurchBehavior;
+
+    public Shoggoth()
+    {
+        LurchBehavior = JBehaviorSet.Animate(() =>
+            {
+                var slimeTrailEmission = SlimeTrail.emission;
+                slimeTrailEmission.enabled = true;
+                SetVelocity(LurchStartSpeed);
+            })
+            .Then(LurchDuration, ratio => SetVelocity(LurchStartSpeed - (LurchStartSpeed - LurchMinSpeed) * ratio));
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -24,8 +31,11 @@ public class Shoggoth : MonoBehaviour
 
     void Update()
     {
+        var attackArm = GetComponentInChildren<ShoggothAttackArm>();
+        if (attackArm.InProgress) return;
+
         var player = Find.ThePlayer;
-        if (!UncancellableLurch && player != null)
+        if (!LurchBehavior.InProgress && player != null)
         {
             // Can rotate toward player
             var vec = transform.forward;
@@ -37,56 +47,36 @@ public class Shoggoth : MonoBehaviour
             transform.rotation = transform.rotation *
                                  Quaternion.AngleAxis(Mathf.Min(angle, 1) * Mathf.Sign(cross.y), Vector3.up);
 
-            Debug.Log($"Angle {angle}");
             if (angle > 20)
             {
-                Debug.Log($"Angle StopLurch");
                 StopLurch();
                 return;
             }
         }
 
-        if (!UncancellableLurch)
+        if (!LurchBehavior.InProgress)
         {
-            if (player != null && Vector3.Distance(player.transform.position, transform.position) > 3)
+            if (player != null && Vector3.Distance(player.transform.position, transform.position) <= 7)
             {
-                StartLurch();
-            }
-            else
-            {
-                Debug.Log($"Distance StopLurch");
                 StopLurch();
+                attackArm.SwingArm();
+                return;
             }
-        }
-        else if (LurchStartTime is {} t)
-        {
-            var ratio = (Time.fixedTime - t) / LurchDuration;
-            if (ratio > 1.0f)
-            {
-                StartLurch();
-            }
-            else
-            {
-                var speed = LurchStartSpeed - (LurchStartSpeed - LurchMinSpeed) * ratio;
-                SetVelocity(speed);
-            }
+            StartLurch();
         }
     }
 
     public void StartLurch()
     {
-        LurchStartTime = Time.fixedTime;
-        var slimeTrailEmission = SlimeTrail.emission;
-        slimeTrailEmission.enabled = true;
-        SetVelocity(LurchStartSpeed);
+        StartCoroutine(LurchBehavior.Prewarm().Start());
     }
 
     public void StopLurch()
     {
+        StopAllCoroutines();
         SetVelocity(0);
         var slimeTrailEmission = SlimeTrail.emission;
         slimeTrailEmission.enabled = false;
-        LurchStartTime = null;
     }
 
     public void SetVelocity(float f)

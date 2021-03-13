@@ -760,6 +760,7 @@ MonoBehaviour:
   MaxWaves: 3
   SpawnablePrefabs:
   - {fileID: 1819089588109213598, guid: d9044667ca144e546825f60812fadea2, type: 3}
+  - {fileID: 2074647308149672288, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
   HealthBarPrefab: {fileID: 8003541062642992730, guid: 008593d52ef7059408c641c4039500e4, type: 3}
 --- !u!1 &1681058297
 GameObject:
@@ -1161,63 +1162,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 1
   m_LocalEulerAnglesHint: {x: 45, y: 130, z: 90}
---- !u!1001 &2074647309247833705
-PrefabInstance:
-  m_ObjectHideFlags: 0
-  serializedVersion: 2
-  m_Modification:
-    m_TransformParent: {fileID: 0}
-    m_Modifications:
-    - target: {fileID: 2074647308149672288, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_Name
-      value: Shoggoth
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_RootOrder
-      value: 9
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalPosition.x
-      value: -5.22998
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalPosition.y
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalPosition.z
-      value: -0.19165146
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalRotation.w
-      value: 0.23128667
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalRotation.x
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalRotation.y
-      value: 0.9728857
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalRotation.z
-      value: -0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.x
-      value: 0
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.y
-      value: 153.254
-      objectReference: {fileID: 0}
-    - target: {fileID: 2074647308149672291, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
-      propertyPath: m_LocalEulerAnglesHint.z
-      value: 0
-      objectReference: {fileID: 0}
-    m_RemovedComponents: []
-  m_SourcePrefab: {fileID: 100100000, guid: ea2e3fc725a39094381ca6e83ffcac8e, type: 3}
 --- !u!1001 &6069840110887842386
 PrefabInstance:
   m_ObjectHideFlags: 0

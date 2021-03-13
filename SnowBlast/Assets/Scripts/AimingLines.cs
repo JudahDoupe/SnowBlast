@@ -1,7 +1,6 @@
 using System;
-using System.Collections;
-using System.Collections.Generic;
 using Assets.Utils;
+using Assets.Utils.JBehavior;
 using UnityEngine;
 
 public class AimingLines : MonoBehaviour
@@ -9,12 +8,17 @@ public class AimingLines : MonoBehaviour
     public float AnimationDuration = 0.5f;
     public float StartingAngle = 90;
     public float Range = 12.0f;
-    
 
     private LineRenderer LineRenderer => GetComponent<LineRenderer>();
-    private readonly Notifier<bool> NotifierImplementation = new Notifier<bool>();
     
-    private float? AnimationStartTime = null;
+    private readonly JBehaviorSet Animation;
+
+    public AimingLines()
+    {
+        Animation = JBehaviorSet.Animate(() => gameObject.SetActive(true))
+            .Then(AnimationDuration, ratio => RenderAngle(StartingAngle * (1.0f - ratio)))
+            .Then(() => gameObject.SetActive(false));
+    }
 
     // Start is called before the first frame update
     void Start()
@@ -25,47 +29,27 @@ public class AimingLines : MonoBehaviour
 
     public void StartAnimation(Action action)
     {
-        NotifierImplementation.Subscribe(_ => action());
-        gameObject.SetActive(true);
-        AnimationStartTime = Time.fixedTime;
-        RenderAngle(StartingAngle);
+        StartCoroutine(Animation
+            .Then(() => action())
+            .Prewarm()
+            .Start());
     }
 
     public void StopAnimation()
     {
         gameObject.SetActive(false);
-        AnimationStartTime = null;
-        NotifierImplementation.Clear();
+        StopAllCoroutines();
     }
 
     private void RenderAngle(float newAngle)
     {
         var halfAngle = newAngle / 2;
         var height = 1.0f;
-        LineRenderer.SetPositions(new Vector3[]
+        LineRenderer.SetPositions(new[]
         {
             new Vector3(Range * MathInDegrees.Sin(halfAngle), height, Range * MathInDegrees.Cos(halfAngle)),
             new Vector3(0, height, 0),
             new Vector3(-Range * MathInDegrees.Sin(halfAngle), height, Range * MathInDegrees.Cos(halfAngle)),
         });
-    }
-
-    void Update()
-    {
-        if (AnimationStartTime is {} startTime)
-        {
-            var percentComplete = Mathf.Min(1.0f, (Time.fixedTime - startTime) / AnimationDuration);
-            RenderAngle(StartingAngle * (1.0f - percentComplete));
-            if (percentComplete >= 1.0f)
-            {
-                NotifierImplementation.Notify(true);
-                StopAnimation();
-            }
-        }
-    }
-
-    public IDisposable Subscribe(Action<bool> subscriber)
-    {
-        return NotifierImplementation.Subscribe(subscriber);
     }
 }
