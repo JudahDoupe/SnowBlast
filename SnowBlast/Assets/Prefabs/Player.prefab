@@ -5347,6 +5347,9 @@ GameObject:
   - component: {fileID: 6069840109820139751}
   - component: {fileID: 1104964275}
   - component: {fileID: 1201868172}
+  - component: {fileID: 344686127}
+  - component: {fileID: 344686128}
+  - component: {fileID: 344686121}
   m_Layer: 0
   m_Name: Player
   m_TagString: Player
@@ -5461,6 +5464,42 @@ MonoBehaviour:
   Hitpoints: 250
   Invulnerable: 1
   Allegiance: 0
+--- !u!114 &344686127
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069840109820139744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: a0fad09a5b0edc0448b2400358950944, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &344686128
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069840109820139744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 8d4a6653d279dd8478924584bb02f014, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+--- !u!114 &344686121
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 6069840109820139744}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 3f31e6d987b0e214499f09efd5b96d39, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
 --- !u!1 &6069840110661467947
 GameObject:
   m_ObjectHideFlags: 0

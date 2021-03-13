@@ -2,13 +2,13 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using UnityEngine;
 
 #nullable  enable
 namespace Assets.Utils.JBehavior
 {
     public class JBehaviorSet
     {
-
         public bool InProgress = false;
         private readonly IReadOnlyList<IJBehavior> Behaviors;
 
@@ -42,8 +42,9 @@ namespace Assets.Utils.JBehavior
             return Append(new JActionBehavior(callback));
         }
 
-        private JBehaviorSet Prewarm()
+        internal IEnumerable<IJBehavior> Prewarm()
         {
+            InProgress = true;
             var remainder = Behaviors.SkipWhile(b =>
             {
                 if (b is JActionBehavior action)
@@ -54,19 +55,18 @@ namespace Assets.Utils.JBehavior
 
                 return false;
             });
-            return new JBehaviorSet(remainder);
+            return remainder;
         }
 
-        public IEnumerator Start()
-        {
-            return Prewarm().StartEnumeration();
-        }
-
-        private IEnumerator StartEnumeration()
+        internal IEnumerator Start()
         {
             InProgress = true;
+            return StartEnumeration(Prewarm().ToList());
+        }
 
-            foreach (var behavior in Behaviors)
+        private IEnumerator StartEnumeration(IEnumerable<IJBehavior> jBehaviors)
+        {
+            foreach (var behavior in jBehaviors)
             {
                 if (behavior is JActionBehavior action)
                 {
@@ -86,5 +86,14 @@ namespace Assets.Utils.JBehavior
         {
             return new JBehaviorSet(Behaviors.Append(behavior));
         }
+    }
+
+    public static class JBehaviorExtensions
+    {
+        //public static Coroutine StartBehavior(this MonoBehaviour gameObject, JBehaviorSet behaviorSet)
+        //{
+        //    var items = behaviorSet.Prewarm().ToList();
+        //    return gameObject.StartCoroutine(behaviorSet.Start(items));
+        //}
     }
 }

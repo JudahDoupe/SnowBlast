@@ -74,7 +74,7 @@ namespace Assets.Scripts
         {
             if (Time.fixedTime >= WaveStartTime)
             {
-                var player = FindObjectOfType<Player>();
+                var player = FindObjectOfType<Player.Player>();
                 for (var i = 0; i < Wave; ++i)
                 {
                     var angleFromPlayer = Random.Range(0.0f, 359.0f) * Mathf.Deg2Rad;
@@ -97,7 +97,7 @@ namespace Assets.Scripts
 
         private ArenaState InWave()
         {
-            var player = FindObjectOfType<Player>();
+            var player = FindObjectOfType<Player.Player>();
             if (player == null)
             {
                 return ArenaState.GameOver;

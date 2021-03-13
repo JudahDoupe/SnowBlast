@@ -11,7 +11,7 @@ public class AimingLines : MonoBehaviour
 
     private LineRenderer LineRenderer => GetComponent<LineRenderer>();
     
-    private readonly JBehaviorSet Animation;
+    public readonly JBehaviorSet Animation;
 
     public AimingLines()
     {

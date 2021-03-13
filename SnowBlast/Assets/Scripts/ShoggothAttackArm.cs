@@ -1,16 +1,18 @@
 using Assets.Utils.JBehavior;
 using UnityEngine;
 
+#nullable enable
 public class ShoggothAttackArm : MonoBehaviour
 {
     public float ExtensionTime = 1.0f;
     public float SwingTime = 1.0f;
-    public GameObject Arm;
+    public GameObject Arm = null!;
+
     public bool InProgress => Animation?.InProgress == true;
 
-    private JBehaviorSet Animation;
+    private readonly JBehaviorSet Animation;
 
-    void Start()
+    public ShoggothAttackArm()
     {
         Animation = JBehaviorSet
             .Animate(() =>
@@ -22,7 +24,7 @@ public class ShoggothAttackArm : MonoBehaviour
             .Then(ExtensionTime, ExtendArm, JCurve.FibbonacciUp)
             .Then(SwingTime, SwingArm, JCurve.FibbonacciUpDown)
             .Then(ExtensionTime, RetractArm, JCurve.FibbonacciUp)
-            .Then(() => Arm.gameObject.SetActive(false));
+            .Then(() => Arm!.gameObject.SetActive(false));
     }
 
     public void SwingArm()
