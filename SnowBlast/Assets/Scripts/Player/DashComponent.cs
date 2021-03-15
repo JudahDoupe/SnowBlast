@@ -42,9 +42,14 @@ namespace Assets.Scripts.Player
 
         public void OnDash()
         {
-            if (DashAnimation.InProgress) return;
-            if (Time.fixedTime < DashEndTime + DashRechargeSeconds) return;
-            if (Player.MoveVector.magnitude < 0.05) return;
+            if (Find.PlayerState.InputBlocker.Blocked ||
+                DashAnimation.InProgress ||
+                Time.fixedTime < DashEndTime + DashRechargeSeconds ||
+                Player.MoveVector.magnitude < 0.05)
+            {
+                return;
+            }
+
             Player.StopAiming();
             StartCoroutine(DashAnimation.Start());
         }

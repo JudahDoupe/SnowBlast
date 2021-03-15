@@ -58,10 +58,15 @@ namespace Assets.Utils.JBehavior
             return remainder;
         }
 
-        internal IEnumerator Start()
+        internal IEnumerator Start(Action? onComplete = null)
         {
             InProgress = true;
-            return StartEnumeration(Prewarm().ToList());
+            var remainder = Prewarm().ToList();
+            if (onComplete is {})
+            {
+                remainder.Add(new JActionBehavior(onComplete));
+            }
+            return StartEnumeration(remainder);
         }
 
         private IEnumerator StartEnumeration(IEnumerable<IJBehavior> jBehaviors)

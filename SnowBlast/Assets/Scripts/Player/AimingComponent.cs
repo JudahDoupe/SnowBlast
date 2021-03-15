@@ -5,12 +5,13 @@ using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Player
 {
+#nullable enable
     public class AimingComponent : MonoBehaviour
     {
-        private AimingLines AimingLines = default!;
+        private AimingLines? AimingLines;
         public bool Aiming => AimingLines?.Animation.InProgress == true;
-        public JBehaviorSet DashAnimation;
-        private Player Player;
+        public JBehaviorSet DashAnimation = null!;
+        private Player Player = null!;
 
         void Start()
         {
@@ -21,13 +22,14 @@ namespace Assets.Scripts.Player
 
         public void StopAiming()
         {
-            AimingLines.StopAnimation();
+            AimingLines?.StopAnimation();
         }
 
         public void OnSecondaryAttack(InputValue action)
         {
+            if (Find.PlayerState.AttackAllowed) return;
             if (DashAnimation.InProgress) return;
-
+            if (AimingLines == null) return;
             if (action.isPressed)
             {
                 AimingLines.transform.position = transform.position;

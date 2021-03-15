@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using Assets.Utils;
+using FluentAssertions;
 using UnityEngine;
 using UnityEngine.UI;
 
@@ -16,7 +17,7 @@ namespace Assets.Scripts
             targetHealth.Should().NotBeNull("EnemyHealthBar passed a gameobject without a Health component");
             targetHealth.Subscribe(UpdateHealthBar);
 
-            var parentObjectHeight = GetMaxBounds(parent).max.y;
+            var parentObjectHeight = parent.GetMaxBounds().max.y;
             var myHeight = gameObject.GetComponent<Canvas>().GetComponent<RectTransform>().rect.height;
             
             gameObject.transform.SetParent(parent.transform);
@@ -43,14 +44,6 @@ namespace Assets.Scripts
             HealthBarSlider.value = 1.0f * healthNotification.CurrentHealth / healthNotification.MaxHealth;
         }
 
-        Bounds GetMaxBounds(GameObject g)
-        {
-            var b = new Bounds(g.transform.position, Vector3.zero);
-            foreach (Renderer r in g.GetComponentsInChildren<Renderer>())
-            {
-                b.Encapsulate(r.bounds);
-            }
-            return b;
-        }
+        
     }
 }

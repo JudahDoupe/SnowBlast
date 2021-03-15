@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using Assets.Utils;
 using Assets.Utils.JBehavior;
@@ -10,7 +11,7 @@ namespace Assets.Scripts.Player
 
     public class Player : MonoBehaviour
     {
-        public float Speed;
+        public float Speed = 5.0f;
         internal Vector3 MoveVector = new Vector3(0, 0, 0);
         
         private JBehaviorSet DashAnimation = default!;
@@ -43,7 +44,7 @@ namespace Assets.Scripts.Player
 
         public void OnPrimaryAttack()
         {
-            Debug.Log("Primary attack.");
+            if (!Find.PlayerState.AttackAllowed) return;
             var gun = gameObject.GetComponentInChildren<Gun>();
             gun.Attack();
         }

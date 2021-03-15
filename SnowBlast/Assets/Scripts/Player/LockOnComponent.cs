@@ -17,6 +17,8 @@ namespace Assets.Scripts.Player
 
         public void OnRightStick(InputValue input)
         {
+            if (Find.PlayerState.AttackAllowed) return;
+
             var direction = (Find.CameraRotation * input.Get<Vector2>().ToVector3XZ()).ToVector2XZ();
 
             if (RightStickBumped)
@@ -33,7 +35,10 @@ namespace Assets.Scripts.Player
 
             RightStickBumped = true;
 
-            var arenaController = GameObject.Find("ArenaController").GetComponent<ArenaController>();
+            var ac = GameObject.Find("ArenaController");
+            if (ac == null) return;
+
+            var arenaController = ac.GetComponent<ArenaController>();
             if (!arenaController) return;
             var originObject = LockOnTarget ?? Find.ThePlayer ?? throw new ApplicationException("No locked on enemy or player!");
             var initialPosition = originObject.transform.position.ToVector2XZ();
