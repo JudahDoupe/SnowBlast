@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using Assets.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
+using Object = System.Object;
 
 #nullable enable
 
@@ -10,7 +11,7 @@ namespace Assets.Scripts.Player
 {
     public class PlayerState : MonoBehaviour
     {
-        public bool WeaponsFree = true;
+        public readonly BlockerStack WeaponsBlocker = new BlockerStack();
         public readonly BlockerStack MoveBlocker = new BlockerStack();
         public readonly BlockerStack RotateBlocker = new BlockerStack();
         public readonly BlockerStack AimBlocker = new BlockerStack();
@@ -19,7 +20,6 @@ namespace Assets.Scripts.Player
         void Start()
         {
             var input = GetComponent<PlayerInput>();
-
             InputBlocker.Subscribe(blockState =>
             {
                 if (blockState == BlockerStack.BlockState.Blocked)
@@ -31,6 +31,11 @@ namespace Assets.Scripts.Player
                     input.ActivateInput();
                 }
             });
+
+            if (!Find.SceneState.WeaponsFree)
+            {
+                WeaponsBlocker.Block(this);
+            }
         }
 
         public Action BlockAll()
@@ -51,7 +56,7 @@ namespace Assets.Scripts.Player
 
         private IEnumerable<BlockerStack> AllBlockers => new[]
         {
-            MoveBlocker, InputBlocker, AimBlocker, RotateBlocker
+            MoveBlocker, InputBlocker, AimBlocker, RotateBlocker, WeaponsBlocker
         };
     }
 }

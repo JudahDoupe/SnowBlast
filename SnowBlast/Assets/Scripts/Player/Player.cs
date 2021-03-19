@@ -1,7 +1,4 @@
-using System;
-using System.Collections;
 using Assets.Utils;
-using Assets.Utils.JBehavior;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
@@ -13,8 +10,6 @@ namespace Assets.Scripts.Player
     {
         public float Speed = 5.0f;
         internal Vector3 MoveVector = new Vector3(0, 0, 0);
-        
-        private GameObject SpeechBubble => gameObject.transform.Find("SpeechBubble").gameObject;
 
         public void OnMoveUpDown(InputValue input)
         {
@@ -33,17 +28,9 @@ namespace Assets.Scripts.Player
 
         public void OnPrimaryAttack()
         {
-            if (!Find.PlayerState.WeaponsFree) return;
+            if (Find.PlayerState.WeaponsBlocker.IsBlocked) return;
             var gun = gameObject.GetComponentInChildren<Gun>();
             gun.Attack();
-        }
-
-
-        public IEnumerator Bang()
-        {
-            SpeechBubble.SetActive(true);
-            yield return new WaitForSeconds(1.0f);
-            SpeechBubble.SetActive(false);
         }
 
 

@@ -29,7 +29,7 @@ namespace Assets.Scripts.Player
 
         public void OnSecondaryAttack(InputValue action)
         {
-            if (Find.PlayerState.WeaponsFree) return;
+            if (Find.PlayerState.WeaponsBlocker.IsBlocked) return;
             if (Find.PlayerState.AimBlocker.IsBlocked) return;
             if (AimingLines == null) return;
             if (action.isPressed)

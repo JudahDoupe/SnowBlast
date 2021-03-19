@@ -121,6 +121,7 @@
     <Compile Include="Assets\PrimitivePlus\Scripts\PrimitivePlusConstants.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_B.cs" />
     <Compile Include="Assets\Scripts\Health.cs" />
+    <Compile Include="Assets\Utils\Sayer.cs" />
     <Compile Include="Assets\Scripts\Player\PlayerHealthBar.cs" />
     <Compile Include="Assets\Utils\Find.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\DropdownSample.cs" />
@@ -133,7 +134,7 @@
     <Compile Include="Assets\PrimitivePlus\Scripts\PrimitivePlusType.cs" />
     <Compile Include="Assets\Scripts\WaveAnnouncement.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
-    <Compile Include="Assets\Utils\Sayer.cs" />
+    <Compile Include="Assets\Scripts\SceneState.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />

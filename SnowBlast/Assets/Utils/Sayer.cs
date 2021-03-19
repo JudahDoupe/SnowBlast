@@ -13,7 +13,7 @@ namespace Assets.Utils
             var speechBubbleTemplate = ObjectPool.Instance.Objects["SpeechBubble"];
             var speechBubbleInstance = Object.Instantiate(speechBubbleTemplate);
             var floater = speechBubbleInstance.GetComponent<FloatAbove>();
-            floater.Target = subject;
+            floater.SetTarget(subject);
             var textMesh = speechBubbleInstance.GetComponentInChildren<TextMeshProUGUI>();
             textMesh.text = directObject;
             return () => Object.Destroy(speechBubbleInstance);
