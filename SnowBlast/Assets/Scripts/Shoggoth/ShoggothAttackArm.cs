@@ -8,7 +8,7 @@ namespace Assets.Scripts.Shoggoth
     {
         public float ExtensionTime = 1.0f;
         public float SwingTime = 1.0f;
-        public GameObject Arm = null!;
+        private GameObject Arm = null!;
 
         public bool InProgress => Animation?.InProgress == true;
 
@@ -27,6 +27,11 @@ namespace Assets.Scripts.Shoggoth
                 .Then(SwingTime, SwingArm, JCurve.FibbonacciUpDown)
                 .Then(ExtensionTime, RetractArm, JCurve.FibbonacciUp)
                 .Then(() => Arm!.gameObject.SetActive(false));
+        }
+
+        void Start()
+        {
+            Arm = transform.Find("AttackArm").gameObject;
         }
 
         public void SwingArm()

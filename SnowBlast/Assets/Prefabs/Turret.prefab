@@ -198,9 +198,8 @@ GameObject:
   serializedVersion: 6
   m_Component:
   - component: {fileID: 1819089588109213599}
-  - component: {fileID: 1819089588109213585}
-  - component: {fileID: 2629957485901568792}
   - component: {fileID: -8690323530513139068}
+  - component: {fileID: 724551293936626651}
   m_Layer: 0
   m_Name: Turret
   m_TagString: Untagged
@@ -223,34 +222,6 @@ Transform:
   m_Father: {fileID: 0}
   m_RootOrder: 0
   m_LocalEulerAnglesHint: {x: 0, y: 0, z: 0}
---- !u!114 &1819089588109213585
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1819089588109213598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 449ba92265713ad4ca8178d2b401f7bd, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  PivotSpeed: 25
---- !u!114 &2629957485901568792
-MonoBehaviour:
-  m_ObjectHideFlags: 0
-  m_CorrespondingSourceObject: {fileID: 0}
-  m_PrefabInstance: {fileID: 0}
-  m_PrefabAsset: {fileID: 0}
-  m_GameObject: {fileID: 1819089588109213598}
-  m_Enabled: 1
-  m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: cbe825935a634d240bf78cd37491008d, type: 3}
-  m_Name: 
-  m_EditorClassIdentifier: 
-  Hitpoints: 250
-  Invulnerable: 0
-  Allegiance: 1
 --- !u!114 &-8690323530513139068
 MonoBehaviour:
   m_ObjectHideFlags: 0
@@ -266,6 +237,19 @@ MonoBehaviour:
   Hitpoints: 30
   Invulnerable: 0
   Allegiance: 1
+--- !u!114 &724551293936626651
+MonoBehaviour:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 1819089588109213598}
+  m_Enabled: 1
+  m_EditorHideFlags: 0
+  m_Script: {fileID: 11500000, guid: 0603c218d9b7da2418439e6d828bd6ff, type: 3}
+  m_Name: 
+  m_EditorClassIdentifier: 
+  PivotSpeed: 3.5
 --- !u!1 &1819089588146171520
 GameObject:
   m_ObjectHideFlags: 0
@@ -501,12 +485,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 1819089589455343346}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 5b44daceb68b5b94b90fc5cd379bc0f2, type: 3}
+  m_Script: {fileID: 11500000, guid: 2f286cee5a5c55349bb9772045bb96b4, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   Projectile: {fileID: 5829099092584334124, guid: 768d996f5d7d83c4ab7659330da07750, type: 3}
   Muzzle1Transform: {fileID: 1819089588023080377}
   Muzzle2Transform: {fileID: 1819089587770008001}
-  MuzzleVelocity: 39.87
-  FireRate: 1.02
-  MaxRange: 25
+  MuzzleVelocity: 15
+  FireRate: 0.72
+  MaxRange: 15

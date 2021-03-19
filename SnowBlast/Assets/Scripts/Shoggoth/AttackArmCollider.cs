@@ -5,6 +5,7 @@ namespace Assets.Scripts.Shoggoth
 {
     public class AttackArmCollider : MonoBehaviour
     {
+        [HideInInspector]
         public bool HitDetected = false;
         void OnCollisionEnter(Collision collision)
         {

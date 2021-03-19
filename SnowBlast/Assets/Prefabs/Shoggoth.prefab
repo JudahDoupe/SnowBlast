@@ -67,12 +67,12 @@ MonoBehaviour:
   m_GameObject: {fileID: 2074647308149672288}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: 526f9c402ed39714cafc834c101dc360, type: 3}
+  m_Script: {fileID: 11500000, guid: ad9ec924e18059441b43a58e4030135e, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
-  LurchStartSpeed: 1.5
+  LurchStartSpeed: 4
   LurchMinSpeed: 0.5
-  LurchDuration: 3
+  LurchDuration: 1
 --- !u!54 &3684416814611113643
 Rigidbody:
   m_ObjectHideFlags: 0
@@ -9768,12 +9768,11 @@ MonoBehaviour:
   m_GameObject: {fileID: 3684416813350999294}
   m_Enabled: 1
   m_EditorHideFlags: 0
-  m_Script: {fileID: 11500000, guid: ce53f8cf64f50434fabf8c2232b2a72a, type: 3}
+  m_Script: {fileID: 11500000, guid: d7613182123d25b4e8399f0f30468b03, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
   ExtensionTime: 1
   SwingTime: 1
-  Arm: {fileID: 3684416814563941869}
 --- !u!1 &3684416814100408232
 GameObject:
   m_ObjectHideFlags: 0

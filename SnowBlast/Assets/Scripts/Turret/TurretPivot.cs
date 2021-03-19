@@ -5,7 +5,7 @@ namespace Assets.Scripts.Turret
 {
     public class TurretPivot : MonoBehaviour
     {
-        public float PivotSpeed;
+        public float PivotSpeed = 3.5f;
 
         // Start is called before the first frame update
         void Start()
