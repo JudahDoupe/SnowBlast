@@ -17,7 +17,7 @@ namespace Assets.Scripts.Shoggoth
 
         public Shoggoth()
         {
-            LurchBehavior = JBehaviorSet.Animate(() =>
+            LurchBehavior = new JBehaviorSet().Then(() =>
                 {
                     var slimeTrailEmission = SlimeTrail.emission;
                     slimeTrailEmission.enabled = true;

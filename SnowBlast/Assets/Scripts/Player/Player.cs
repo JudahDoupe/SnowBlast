@@ -14,18 +14,7 @@ namespace Assets.Scripts.Player
         public float Speed = 5.0f;
         internal Vector3 MoveVector = new Vector3(0, 0, 0);
         
-        private JBehaviorSet DashAnimation = default!;
-        private AimingComponent AimingComponent = default!;
-        private LockOnComponent LockOnComponent = default!;
-
         private GameObject SpeechBubble => gameObject.transform.Find("SpeechBubble").gameObject;
-
-        public void Start()
-        {
-            DashAnimation = gameObject.GetComponent<DashComponent>().DashAnimation;
-            AimingComponent = gameObject.GetComponent<AimingComponent>();
-            LockOnComponent = GetComponent<LockOnComponent>();
-        }
 
         public void OnMoveUpDown(InputValue input)
         {
@@ -44,7 +33,7 @@ namespace Assets.Scripts.Player
 
         public void OnPrimaryAttack()
         {
-            if (!Find.PlayerState.AttackAllowed) return;
+            if (!Find.PlayerState.WeaponsFree) return;
             var gun = gameObject.GetComponentInChildren<Gun>();
             gun.Attack();
         }
@@ -66,13 +55,8 @@ namespace Assets.Scripts.Player
 
         private void UpdateFacing()
         {
-            if (DashAnimation.InProgress) return;
-            if (LockOnComponent.LockOnTarget is {} target)
-            {
-                var xyz = target.transform.position;
-                gameObject.transform.LookAt(new Vector3(xyz.x, 0, xyz.z));
-            }
-            else if (Gamepad.current == null)
+            if (Find.PlayerState.RotateBlocker.IsBlocked) return;
+            if (Gamepad.current == null)
             {
                 var ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
 
@@ -92,19 +76,12 @@ namespace Assets.Scripts.Player
 
         private void UpdateVelocity()
         {
-            if (DashAnimation.InProgress) return;
-            if (AimingComponent.Aiming)
-            {
-                gameObject.GetComponent<Rigidbody>().velocity = Vector3.zero;
-            }
-            else if (MoveVector.magnitude > 0)
+            if (Find.PlayerState.MoveBlocker.IsBlocked) return;
+            if (MoveVector.magnitude > 0)
             {
                 gameObject.GetComponent<Rigidbody>()
                     .velocity = Find.CameraRotation * MoveVector * Speed;
             }
         }
-
-        
-        public void StopAiming() => GetComponent<AimingComponent>().StopAiming();
     }
 }

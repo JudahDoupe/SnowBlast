@@ -1,1 +1,4 @@
-Player moveTo Mark
+Player face Mark
+Player moveTo Mark with speed 5
+Player face Pyramid
+Player say ...

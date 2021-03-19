@@ -13,5 +13,10 @@ namespace Assets.Utils
         {
             return new Vector3(v2.x, 0, v2.y);
         }
+
+        public static Vector3 ReplaceY(this Vector3 self, float y)
+        {
+            return new Vector3(self.x, y, self.z);
+        }
     }
 }

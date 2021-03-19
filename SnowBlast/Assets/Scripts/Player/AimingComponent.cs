@@ -9,15 +9,17 @@ namespace Assets.Scripts.Player
     public class AimingComponent : MonoBehaviour
     {
         private AimingLines? AimingLines;
-        public bool Aiming => AimingLines?.Animation.InProgress == true;
-        public JBehaviorSet DashAnimation = null!;
-        private Player Player = null!;
 
         void Start()
         {
             AimingLines = GetComponentInChildren<AimingLines>(true);
-            DashAnimation = GetComponent<DashComponent>().DashAnimation;
-            Player = GetComponent<Player>();
+            Find.PlayerState.AimBlocker.Subscribe(state =>
+            {
+                if (state == BlockerStack.BlockState.Blocked)
+                {
+                    StopAiming();
+                }
+            });
         }
 
         public void StopAiming()
@@ -27,8 +29,8 @@ namespace Assets.Scripts.Player
 
         public void OnSecondaryAttack(InputValue action)
         {
-            if (Find.PlayerState.AttackAllowed) return;
-            if (DashAnimation.InProgress) return;
+            if (Find.PlayerState.WeaponsFree) return;
+            if (Find.PlayerState.AimBlocker.IsBlocked) return;
             if (AimingLines == null) return;
             if (action.isPressed)
             {
@@ -42,7 +44,7 @@ namespace Assets.Scripts.Player
                     {
                         if (hit.distance <= range && hit.collider.gameObject.UltimateParent().GetComponent<Health>() is { } health)
                         {
-                            StartCoroutine(Player.Bang());
+                            Bang();
                             health.ApplyDamage(300, Allegiance.Player);
                         }
                     }
@@ -52,6 +54,14 @@ namespace Assets.Scripts.Player
             {
                 AimingLines.StopAnimation();
             }
+        }
+
+        private void Bang()
+        {
+            var unsay = Sayer.Say(Find.ThePlayer, "Bang!");
+            StartCoroutine(new JBehaviorSet()
+                .Wait(2.0f)
+                .Start(() => unsay()));
         }
     }
 }

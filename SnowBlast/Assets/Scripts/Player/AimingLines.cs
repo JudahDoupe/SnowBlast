@@ -17,7 +17,7 @@ namespace Assets.Scripts.Player
 
         public AimingLines()
         {
-            Animation = JBehaviorSet.Animate(() => gameObject.SetActive(true))
+            Animation = new JBehaviorSet().Then(() => gameObject.SetActive(true))
                 .Then(AnimationDuration, ratio => RenderAngle(StartingAngle * (1.0f - ratio)))
                 .Then(() => gameObject.SetActive(false));
         }

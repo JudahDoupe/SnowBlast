@@ -16,8 +16,8 @@ namespace Assets.Scripts.Shoggoth
 
         public ShoggothAttackArm()
         {
-            Animation = JBehaviorSet
-                .Animate(() =>
+            Animation = new JBehaviorSet()
+                .Then(() =>
                 {
                     Arm.GetComponent<AttackArmCollider>().HitDetected = false;
                     transform.rotation = Quaternion.AngleAxis(180.0f, Vector3.up);

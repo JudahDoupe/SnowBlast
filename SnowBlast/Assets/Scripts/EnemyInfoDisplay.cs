@@ -43,7 +43,5 @@ namespace Assets.Scripts
         {
             HealthBarSlider.value = 1.0f * healthNotification.CurrentHealth / healthNotification.MaxHealth;
         }
-
-        
     }
 }

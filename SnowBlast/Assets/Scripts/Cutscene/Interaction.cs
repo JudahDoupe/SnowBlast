@@ -1,6 +1,7 @@
 using Assets.Utils;
 using Assets.Utils.JBehavior;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Cutscene
 {
@@ -10,7 +11,26 @@ namespace Assets.Scripts.Cutscene
 
         public TextAsset CutsceneAsset;
 
-        private bool CurrentState = false;
+        private readonly BlockerStack InputBlocker = new BlockerStack();
+
+        void Start()
+        {
+            var input = GetComponent<PlayerInput>();
+            InputBlocker.Subscribe(state =>
+            {
+                if (state == BlockerStack.BlockState.Blocked)
+                {
+                    GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(false);
+                    input.DeactivateInput();
+                }
+                else
+                {
+                    GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(true);
+                    input.ActivateInput();
+                }
+            });
+            InputBlocker.Block(this);
+        }
 
         void Update()
         {
@@ -18,19 +38,23 @@ namespace Assets.Scripts.Cutscene
 
             if (player == null) return;
 
-            CurrentState = this.GetMaxBounds().Intersects(player.GetMaxBounds());
-
-            GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(CurrentState);
+            var intersection = this.GetMaxBounds().Intersects(player.GetMaxBounds());
+            if (intersection)
+            {
+                InputBlocker.Unblock(this);
+            }
+            else
+            {
+                InputBlocker.Block(this);
+            }
         }
 
-        void OnPrimaryAttack()
+        void OnConfirm()
         {
-            if (CurrentState && !Find.PlayerState.InputBlocker.Blocked)
-            {
-                var unblock = Find.PlayerState.BlockAll();
-                JBehaviorSet animation = new CutsceneAnimator(CutsceneAsset).Create();
-                StartCoroutine(animation.Start(() => unblock()));
-            }
+            Debug.Log("Hello world!");
+            var unblock = Find.PlayerState.BlockAll();
+            var animation = new CutsceneAnimator(CutsceneAsset).Create();
+            StartCoroutine(animation.Start(() => unblock()));
         }
     }
 }

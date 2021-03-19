@@ -17,19 +17,20 @@ namespace Assets.Utils.JBehavior
             Behaviors = actions.ToList();
         }
 
-        private JBehaviorSet(IJBehavior action)
+        public JBehaviorSet()
         {
-            Behaviors = new[] {action};
+            Behaviors = new List<IJBehavior>();
         }
 
-        public static JBehaviorSet Animate(float duration, Action<float> callback, float[]? curve = null)
+        public IEnumerator Start(Action? onComplete = null)
         {
-            return new JBehaviorSet(new JAnimationBehavior(duration, callback, curve ?? JCurve.Linear));
-        }
-
-        public static JBehaviorSet Animate(Action callback)
-        {
-            return new JBehaviorSet(new JActionBehavior(callback));
+            InProgress = true;
+            var remainder = Prewarm().ToList();
+            if (onComplete is { })
+            {
+                remainder.Add(new JActionBehavior(onComplete));
+            }
+            return StartEnumeration(remainder);
         }
 
         public JBehaviorSet Then(float duration, Action<float> callback, float[]? curve = null)
@@ -37,12 +38,17 @@ namespace Assets.Utils.JBehavior
             return Append(new JAnimationBehavior(duration, callback, curve ?? JCurve.Linear));
         }
 
+        public JBehaviorSet Computed<T>(Func<T> initial, Func<T, float> duration, Action<T, float> callback, float[]? curve = null)
+        {
+            return Append(new JComputedBehavior<T>(initial, duration, callback, curve ?? JCurve.Linear));
+        }
+
         public JBehaviorSet Then(Action callback)
         {
             return Append(new JActionBehavior(callback));
         }
 
-        internal IEnumerable<IJBehavior> Prewarm()
+        private IEnumerable<IJBehavior> Prewarm()
         {
             InProgress = true;
             var remainder = Behaviors.SkipWhile(b =>
@@ -56,17 +62,6 @@ namespace Assets.Utils.JBehavior
                 return false;
             });
             return remainder;
-        }
-
-        internal IEnumerator Start(Action? onComplete = null)
-        {
-            InProgress = true;
-            var remainder = Prewarm().ToList();
-            if (onComplete is {})
-            {
-                remainder.Add(new JActionBehavior(onComplete));
-            }
-            return StartEnumeration(remainder);
         }
 
         private IEnumerator StartEnumeration(IEnumerable<IJBehavior> jBehaviors)
@@ -90,6 +85,18 @@ namespace Assets.Utils.JBehavior
         private JBehaviorSet Append(IJBehavior behavior)
         {
             return new JBehaviorSet(Behaviors.Append(behavior));
+        }
+
+        public JBehaviorSet Append(JBehaviorSet other)
+        {
+            var newBehaviors = Behaviors.ToList();
+            newBehaviors.AddRange(other.Behaviors);
+            return new JBehaviorSet(newBehaviors);
+        }
+
+        public JBehaviorSet Wait(float duration)
+        {
+            return Then(duration, _ => { });
         }
     }
 

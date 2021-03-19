@@ -1,6 +1,7 @@
 using Assets.Utils;
 using Assets.Utils.JBehavior;
 using UnityEngine;
+using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Player
 {
@@ -14,14 +15,14 @@ namespace Assets.Scripts.Player
         private const float DashVelocity = 50.0f;
         private const float DashDurationSeconds = 0.2f;
         private const float DashRechargeSeconds = 0.2f;
-        private Player Player = default!;
 
         public DashComponent()
         {
-            DashAnimation = JBehaviorSet.Animate(() =>
+            DashAnimation = new JBehaviorSet().Then(() =>
                 {
-                    DashVector = Player.MoveVector.normalized;
-                    Debug.Log(DashVector);
+                    Find.PlayerState.MoveBlocker.Block(this);
+                    Find.PlayerState.RotateBlocker.Block(this);
+                    Find.PlayerState.AimBlocker.Block(this);
                     SetDashLines(DashVector.normalized);
                     gameObject.GetComponent<Rigidbody>()
                         .velocity = Find.CameraRotation * DashVector.normalized * DashVelocity;
@@ -37,26 +38,41 @@ namespace Assets.Scripts.Player
                     gameObject.GetComponent<Rigidbody>()
                         .velocity = Find.CameraRotation * DashVector.normalized * 0;
                     DashEndTime = Time.fixedTime;
+                    Find.PlayerState.MoveBlocker.Unblock(this);
+                    Find.PlayerState.RotateBlocker.Unblock(this);
+                    Find.PlayerState.AimBlocker.Unblock(this);
                 });
+        }
+
+        public void OnMoveUpDown(InputValue input)
+        {
+            DashVector = new Vector3(DashVector.x, 0, input.Get<Vector2>().y);
+        }
+
+        public void OnMoveRightLeft(InputValue input)
+        {
+            DashVector = new Vector3(input.Get<Vector2>().x, 0, DashVector.z);
+        }
+
+        public void OnLeftStick(InputValue input)
+        {
+            DashVector = input.Get<Vector2>().ToVector3XZ();
         }
 
         public void OnDash()
         {
-            if (Find.PlayerState.InputBlocker.Blocked ||
-                DashAnimation.InProgress ||
+            if (DashAnimation.InProgress ||
                 Time.fixedTime < DashEndTime + DashRechargeSeconds ||
-                Player.MoveVector.magnitude < 0.05)
+                DashVector.magnitude < 0.05)
             {
                 return;
             }
-
-            Player.StopAiming();
+            
             StartCoroutine(DashAnimation.Start());
         }
 
         public void Start()
         {
-            Player = GetComponent<Player>();
             DashLines = GetComponentInChildren<ParticleSystem>(true);
             var main = DashLines.main;
             main.startLifetime = new ParticleSystem.MinMaxCurve(DashDurationSeconds);

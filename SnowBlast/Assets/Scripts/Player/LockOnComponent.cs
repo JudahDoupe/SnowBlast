@@ -17,7 +17,7 @@ namespace Assets.Scripts.Player
 
         public void OnRightStick(InputValue input)
         {
-            if (Find.PlayerState.AttackAllowed) return;
+            if (!Find.PlayerState.WeaponsFree) return;
 
             var direction = (Find.CameraRotation * input.Get<Vector2>().ToVector3XZ()).ToVector2XZ();
 
@@ -75,6 +75,15 @@ namespace Assets.Scripts.Player
             var newTarget = lookAtEnemies.MinBy(enemy => Vector3.Distance(enemy.transform.position, originObject.transform.position));
 
             SetLockOnTarget(newTarget);
+        }
+
+        void FixedUpdate()
+        {
+            if (LockOnTarget is {} target)
+            {
+                var xyz = target.transform.position;
+                gameObject.transform.LookAt(new Vector3(xyz.x, 0, xyz.z));
+            }
         }
 
         private void StopLockOn()
