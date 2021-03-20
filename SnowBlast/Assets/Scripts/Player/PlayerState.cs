@@ -3,7 +3,6 @@ using System.Collections.Generic;
 using Assets.Utils;
 using UnityEngine;
 using UnityEngine.InputSystem;
-using Object = System.Object;
 
 #nullable enable
 
@@ -11,18 +10,18 @@ namespace Assets.Scripts.Player
 {
     public class PlayerState : MonoBehaviour
     {
-        public readonly BlockerStack WeaponsBlocker = new BlockerStack();
-        public readonly BlockerStack MoveBlocker = new BlockerStack();
-        public readonly BlockerStack RotateBlocker = new BlockerStack();
-        public readonly BlockerStack AimBlocker = new BlockerStack();
-        private readonly BlockerStack InputBlocker = new BlockerStack();
+        public readonly LogicalOrSet WeaponsBlocked = new LogicalOrSet();
+        public readonly LogicalOrSet MoveBlocked = new LogicalOrSet();
+        public readonly LogicalOrSet RotateBlocked = new LogicalOrSet();
+        public readonly LogicalOrSet AimBlocked = new LogicalOrSet();
+        private readonly LogicalOrSet InputBlocked = new LogicalOrSet();
 
         void Start()
         {
             var input = GetComponent<PlayerInput>();
-            InputBlocker.Subscribe(blockState =>
+            InputBlocked.Subscribe(inputBlocked =>
             {
-                if (blockState == BlockerStack.BlockState.Blocked)
+                if (inputBlocked)
                 {
                     input.DeactivateInput();
                 }
@@ -31,32 +30,27 @@ namespace Assets.Scripts.Player
                     input.ActivateInput();
                 }
             });
-
-            if (!Find.SceneState.WeaponsFree)
-            {
-                WeaponsBlocker.Block(this);
-            }
         }
 
         public Action BlockAll()
         {
             foreach (var blocker in AllBlockers)
             {
-                blocker.Block(this);
+                blocker.Add(this);
             }
 
             return () =>
             {
                 foreach (var blocker in AllBlockers)
                 {
-                    blocker.Unblock(this);
+                    blocker.Remove(this);
                 }
             };
         }
 
-        private IEnumerable<BlockerStack> AllBlockers => new[]
+        private IEnumerable<LogicalOrSet> AllBlockers => new[]
         {
-            MoveBlocker, InputBlocker, AimBlocker, RotateBlocker, WeaponsBlocker
+            MoveBlocked, InputBlocked, AimBlocked, RotateBlocked, WeaponsBlocked
         };
     }
 }

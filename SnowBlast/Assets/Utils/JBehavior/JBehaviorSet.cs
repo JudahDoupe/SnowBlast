@@ -2,30 +2,31 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using UnityEngine;
+using FluentAssertions;
 
 #nullable  enable
 namespace Assets.Utils.JBehavior
 {
     public class JBehaviorSet
     {
-        public bool InProgress = false;
-        private readonly IReadOnlyList<IJBehavior> Behaviors;
+        public bool InProgress;
+        private readonly List<IJBehavior> Behaviors = new List<IJBehavior>();
 
-        private JBehaviorSet(IEnumerable<IJBehavior> actions)
+        public void Append(IJBehavior behavior)
         {
-            Behaviors = actions.ToList();
+            Behaviors.Add(behavior);
         }
 
-        public JBehaviorSet()
+        public void Append(JBehaviorSet other)
         {
-            Behaviors = new List<IJBehavior>();
+            Behaviors.AddRange(other.Behaviors);
         }
 
-        public IEnumerator Start(Action? onComplete = null)
+        public IEnumerator Begin(Action? onComplete = null)
         {
+            InProgress.Should().Be(false, "A single behavior set should only be started once.");
             InProgress = true;
-            var remainder = Prewarm().ToList();
+            var remainder = RunInitialActions();
             if (onComplete is { })
             {
                 remainder.Add(new JActionBehavior(onComplete));
@@ -33,24 +34,8 @@ namespace Assets.Utils.JBehavior
             return StartEnumeration(remainder);
         }
 
-        public JBehaviorSet Then(float duration, Action<float> callback, float[]? curve = null)
+        private List<IJBehavior> RunInitialActions()
         {
-            return Append(new JAnimationBehavior(duration, callback, curve ?? JCurve.Linear));
-        }
-
-        public JBehaviorSet Computed<T>(Func<T> initial, Func<T, float> duration, Action<T, float> callback, float[]? curve = null)
-        {
-            return Append(new JComputedBehavior<T>(initial, duration, callback, curve ?? JCurve.Linear));
-        }
-
-        public JBehaviorSet Then(Action callback)
-        {
-            return Append(new JActionBehavior(callback));
-        }
-
-        private IEnumerable<IJBehavior> Prewarm()
-        {
-            InProgress = true;
             var remainder = Behaviors.SkipWhile(b =>
             {
                 if (b is JActionBehavior action)
@@ -61,7 +46,7 @@ namespace Assets.Utils.JBehavior
 
                 return false;
             });
-            return remainder;
+            return remainder.ToList();
         }
 
         private IEnumerator StartEnumeration(IEnumerable<IJBehavior> jBehaviors)
@@ -81,31 +66,5 @@ namespace Assets.Utils.JBehavior
 
             InProgress = false;
         }
-
-        private JBehaviorSet Append(IJBehavior behavior)
-        {
-            return new JBehaviorSet(Behaviors.Append(behavior));
-        }
-
-        public JBehaviorSet Append(JBehaviorSet other)
-        {
-            var newBehaviors = Behaviors.ToList();
-            newBehaviors.AddRange(other.Behaviors);
-            return new JBehaviorSet(newBehaviors);
-        }
-
-        public JBehaviorSet Wait(float duration)
-        {
-            return Then(duration, _ => { });
-        }
-    }
-
-    public static class JBehaviorExtensions
-    {
-        //public static Coroutine StartBehavior(this MonoBehaviour gameObject, JBehaviorSet behaviorSet)
-        //{
-        //    var items = behaviorSet.Prewarm().ToList();
-        //    return gameObject.StartCoroutine(behaviorSet.Start(items));
-        //}
     }
 }

@@ -7,12 +7,20 @@ namespace Assets.Scripts
     {
         public bool WeaponsFree = true;
 
+        [HideInInspector]
+        public readonly LogicalOrSet InteractionPromptShown = new LogicalOrSet();
+
         void Start()
         {
             if (!WeaponsFree)
             {
-                Find.PlayerState.WeaponsBlocker.Block(this);
+                Find.PlayerState.WeaponsBlocked.Add(this);
             }
+
+            InteractionPromptShown.Subscribe(shown =>
+            {
+                GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(shown);
+            });
         }
     }
 }

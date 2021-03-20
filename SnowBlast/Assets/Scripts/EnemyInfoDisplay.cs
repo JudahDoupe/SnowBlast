@@ -17,7 +17,7 @@ namespace Assets.Scripts
             targetHealth.Should().NotBeNull("EnemyHealthBar passed a gameobject without a Health component");
             targetHealth.Subscribe(UpdateHealthBar);
 
-            var parentObjectHeight = parent.GetMaxBounds().max.y;
+            var parentObjectHeight = parent.GetBounds().max.y;
             var myHeight = gameObject.GetComponent<Canvas>().GetComponent<RectTransform>().rect.height;
             
             gameObject.transform.SetParent(parent.transform);

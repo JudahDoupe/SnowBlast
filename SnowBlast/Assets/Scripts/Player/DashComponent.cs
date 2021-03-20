@@ -5,9 +5,9 @@ using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Player
 {
-    public class DashComponent : MonoBehaviour
+    public class DashComponent : MyMonoBehaviour
     {
-        public readonly JBehaviorSet DashAnimation;
+        public readonly JStartableBehavior DashAnimation;
         private float DashEndTime;
         private Vector3 DashVector;
         private ParticleSystem DashLines = default!;
@@ -18,11 +18,11 @@ namespace Assets.Scripts.Player
 
         public DashComponent()
         {
-            DashAnimation = new JBehaviorSet().Then(() =>
+            DashAnimation = BeginBehavior.Then(() =>
                 {
-                    Find.PlayerState.MoveBlocker.Block(this);
-                    Find.PlayerState.RotateBlocker.Block(this);
-                    Find.PlayerState.AimBlocker.Block(this);
+                    Find.PlayerState.MoveBlocked.Add(this);
+                    Find.PlayerState.RotateBlocked.Add(this);
+                    Find.PlayerState.AimBlocked.Add(this);
                     SetDashLines(DashVector.normalized);
                     gameObject.GetComponent<Rigidbody>()
                         .velocity = Find.CameraRotation * DashVector.normalized * DashVelocity;
@@ -38,9 +38,9 @@ namespace Assets.Scripts.Player
                     gameObject.GetComponent<Rigidbody>()
                         .velocity = Find.CameraRotation * DashVector.normalized * 0;
                     DashEndTime = Time.fixedTime;
-                    Find.PlayerState.MoveBlocker.Unblock(this);
-                    Find.PlayerState.RotateBlocker.Unblock(this);
-                    Find.PlayerState.AimBlocker.Unblock(this);
+                    Find.PlayerState.MoveBlocked.Remove(this);
+                    Find.PlayerState.RotateBlocked.Remove(this);
+                    Find.PlayerState.AimBlocked.Remove(this);
                 });
         }
 
@@ -68,7 +68,7 @@ namespace Assets.Scripts.Player
                 return;
             }
             
-            StartCoroutine(DashAnimation.Start());
+            DashAnimation.Start();
         }
 
         public void Start()

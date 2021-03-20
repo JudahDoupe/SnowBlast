@@ -17,7 +17,7 @@ namespace Assets.Scripts.Player
 
         public void OnRightStick(InputValue input)
         {
-            if (Find.PlayerState.WeaponsBlocker.IsBlocked) return;
+            if (Find.PlayerState.WeaponsBlocked.IsTrue) return;
 
             var direction = (Find.CameraRotation * input.Get<Vector2>().ToVector3XZ()).ToVector2XZ();
 
@@ -88,7 +88,7 @@ namespace Assets.Scripts.Player
 
         private void StopLockOn()
         {
-            Find.PlayerState.RotateBlocker.Unblock(this);
+            Find.PlayerState.RotateBlocked.Remove(this);
             LockOnDispose?.Dispose();
             LockOnDispose = null;
             LockOnTarget = null;
@@ -103,7 +103,7 @@ namespace Assets.Scripts.Player
             if (newTarget == null) return;
             LockOnTarget = newTarget;
 
-            Find.PlayerState.RotateBlocker.Block(this);
+            Find.PlayerState.RotateBlocked.Add(this);
 
             var indicator = LockOnTarget.GetComponentInChildren<EnemyInfoDisplay>();
             indicator.StartLockOn();

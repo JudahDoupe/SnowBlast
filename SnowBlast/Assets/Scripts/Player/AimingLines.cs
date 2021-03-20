@@ -5,7 +5,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class AimingLines : MonoBehaviour
+    public class AimingLines : MyMonoBehaviour
     {
         public float AnimationDuration = 0.5f;
         public float StartingAngle = 90;
@@ -13,11 +13,11 @@ namespace Assets.Scripts.Player
 
         private LineRenderer LineRenderer => GetComponent<LineRenderer>();
     
-        public readonly JBehaviorSet Animation;
+        public readonly JStartableBehavior Animation;
 
         public AimingLines()
         {
-            Animation = new JBehaviorSet().Then(() => gameObject.SetActive(true))
+            Animation = BeginBehavior.Then(() => gameObject.SetActive(true))
                 .Then(AnimationDuration, ratio => RenderAngle(StartingAngle * (1.0f - ratio)))
                 .Then(() => gameObject.SetActive(false));
         }
@@ -31,8 +31,7 @@ namespace Assets.Scripts.Player
 
         public void StartAnimation(Action onComplete)
         {
-            StartCoroutine(Animation
-                .Start(onComplete));
+            Animation.Start(onComplete);
         }
 
         public void StopAnimation()

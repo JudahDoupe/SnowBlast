@@ -3,13 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Reflection;
 using System.Text.RegularExpressions;
-using Assets.Scripts.Player;
 using Assets.Utils;
 using Assets.Utils.JBehavior;
 using FluentAssertions;
-using UnityEditor;
 using UnityEngine;
-using Object = UnityEngine.Object;
 
 namespace Assets.Scripts.Cutscene
 {
@@ -206,7 +203,7 @@ namespace Assets.Scripts.Cutscene
         private JBehaviorSet Say(GameObject subject, string directObject)
         {
             var unsay = Sayer.Say(subject, directObject);
-            return new JBehaviorSet();
+            return new JBehaviorSet(); // .Wait(2.0f).Then(() => unsay());
         }
     }
 

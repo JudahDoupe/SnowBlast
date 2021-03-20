@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace Assets.Scripts.Shoggoth
 {
-    public class Shoggoth : MonoBehaviour
+    public class Shoggoth : MyMonoBehaviour
     {
         public float LurchStartSpeed = 1;
         public float LurchMinSpeed = 0.5f;
@@ -12,12 +12,12 @@ namespace Assets.Scripts.Shoggoth
 
         private ParticleSystem SlimeTrail;
 
-        private JBehaviorSet LurchBehavior;
+        private JStartableBehavior LurchBehavior;
         private ShoggothAttackArm AttackArm;
 
         public Shoggoth()
         {
-            LurchBehavior = new JBehaviorSet().Then(() =>
+            LurchBehavior = BeginBehavior.Then(() =>
                 {
                     var slimeTrailEmission = SlimeTrail.emission;
                     slimeTrailEmission.enabled = true;
@@ -66,7 +66,7 @@ namespace Assets.Scripts.Shoggoth
 
         public void StartLurch()
         {
-            StartCoroutine(LurchBehavior.Start());
+            LurchBehavior.Start();
         }
 
         public void StopMovement()

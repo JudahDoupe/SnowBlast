@@ -11,50 +11,65 @@ namespace Assets.Scripts.Cutscene
 
         public TextAsset CutsceneAsset;
 
-        private readonly BlockerStack InputBlocker = new BlockerStack();
+        private readonly LogicalOrSet InputBlocked = new LogicalOrSet();
+
+        private bool Done;
 
         void Start()
         {
             var input = GetComponent<PlayerInput>();
-            InputBlocker.Subscribe(state =>
+
+            Find.SceneState.InteractionPromptShown.Subscribe(shown =>
             {
-                if (state == BlockerStack.BlockState.Blocked)
+                if (shown && PlayerIntersected()) InputBlocked.Remove(this);
+                else InputBlocked.Add(this);
+            });
+
+            InputBlocked.Subscribe(inputBlocked =>
+            {
+                if (inputBlocked)
                 {
-                    GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(false);
                     input.DeactivateInput();
                 }
                 else
                 {
-                    GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(true);
                     input.ActivateInput();
                 }
             });
-            InputBlocker.Block(this);
+            InputBlocked.Add(this);
         }
 
         void Update()
         {
+            if (Done) return;
             var player = Find.ThePlayer;
 
             if (player == null) return;
 
-            var intersection = this.GetMaxBounds().Intersects(player.GetMaxBounds());
-            if (intersection)
+            if (PlayerIntersected())
             {
-                InputBlocker.Unblock(this);
+                Find.SceneState.InteractionPromptShown.Add(this);
             }
             else
             {
-                InputBlocker.Block(this);
+                Find.SceneState.InteractionPromptShown.Remove(this);
             }
+        }
+
+        private bool PlayerIntersected()
+        {
+            var player = Find.ThePlayer;
+            return player != null && this.GetBounds().Intersects(player.GetBounds());
         }
 
         void OnConfirm()
         {
-            Debug.Log("Hello world!");
+            Find.SceneState.InteractionPromptShown.Remove(this);
+            Done = true;
+            InputBlocked.Add("Done");
             var unblock = Find.PlayerState.BlockAll();
             var animation = new CutsceneAnimator(CutsceneAsset).Create();
-            StartCoroutine(animation.Start(() => unblock()));
+            StartCoroutine(animation.Begin(() => unblock()));
         }
     }
 }

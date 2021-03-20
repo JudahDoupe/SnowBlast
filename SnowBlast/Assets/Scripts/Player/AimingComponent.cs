@@ -6,16 +6,16 @@ using UnityEngine.InputSystem;
 namespace Assets.Scripts.Player
 {
 #nullable enable
-    public class AimingComponent : MonoBehaviour
+    public class AimingComponent : MyMonoBehaviour
     {
         private AimingLines? AimingLines;
 
         void Start()
         {
             AimingLines = GetComponentInChildren<AimingLines>(true);
-            Find.PlayerState.AimBlocker.Subscribe(state =>
+            Find.PlayerState.AimBlocked.Subscribe(aimBlocked =>
             {
-                if (state == BlockerStack.BlockState.Blocked)
+                if (aimBlocked)
                 {
                     StopAiming();
                 }
@@ -29,8 +29,8 @@ namespace Assets.Scripts.Player
 
         public void OnSecondaryAttack(InputValue action)
         {
-            if (Find.PlayerState.WeaponsBlocker.IsBlocked) return;
-            if (Find.PlayerState.AimBlocker.IsBlocked) return;
+            if (Find.PlayerState.WeaponsBlocked.IsTrue) return;
+            if (Find.PlayerState.AimBlocked.IsTrue) return;
             if (AimingLines == null) return;
             if (action.isPressed)
             {
@@ -59,9 +59,9 @@ namespace Assets.Scripts.Player
         private void Bang()
         {
             var unsay = Sayer.Say(Find.ThePlayer, "Bang!");
-            StartCoroutine(new JBehaviorSet()
+            BeginBehavior
                 .Wait(2.0f)
-                .Start(() => unsay()));
+                .Start(() => unsay());
         }
     }
 }

@@ -65,6 +65,7 @@
     <Compile Include="Assets\Scripts\Turret\TurretPivot.cs" />
     <Compile Include="Assets\Utils\EZComparer.cs" />
     <Compile Include="Assets\Utils\DisposableExtensions.cs" />
+    <Compile Include="Assets\Scripts\SceneState.cs" />
     <Compile Include="Assets\Utils\JBehavior\JBehavior.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01_UGUI.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
@@ -86,7 +87,7 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_UiFrameRateCounter.cs" />
     <Compile Include="Assets\Scripts\Shoggoth\AttackArmCollider.cs" />
     <Compile Include="Assets\Scripts\Turret\TurretCannon.cs" />
-    <Compile Include="Assets\Utils\BlockerStack.cs" />
+    <Compile Include="Assets\Utils\LogicalOrSet.cs" />
     <Compile Include="Assets\Scripts\Player\LockOnComponent.cs" />
     <Compile Include="Assets\Scripts\Cutscene\Interaction.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\CameraController.cs" />
@@ -134,11 +135,15 @@
     <Compile Include="Assets\PrimitivePlus\Scripts\PrimitivePlusType.cs" />
     <Compile Include="Assets\Scripts\WaveAnnouncement.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
-    <Compile Include="Assets\Scripts\SceneState.cs" />
+    <Compile Include="Assets\Utils\JBehavior\JBehaviorSetExtensions.cs" />
+    <Compile Include="Assets\Utils\MyMonoBehaviour.cs" />
+    <Compile Include="Assets\Utils\JBehavior\JStartableBehavior.cs" />
+    <Compile Include="Assets\CameraFocus.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Overlay.shader" />
+     <None Include="Assets\Cutscenes\CantLeaveNow.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_Bitmap.shader" />
      <None Include="Assets\PrimitivePlus\Documentation\ReadMe.txt" />
      <None Include="Assets\TextMesh Pro\Examples &amp; Extras\Fonts\Oswald-Bold - OFL.txt" />

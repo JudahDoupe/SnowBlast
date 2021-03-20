@@ -28,7 +28,7 @@ namespace Assets.Scripts.Player
 
         public void OnPrimaryAttack()
         {
-            if (Find.PlayerState.WeaponsBlocker.IsBlocked) return;
+            if (Find.PlayerState.WeaponsBlocked.IsTrue) return;
             var gun = gameObject.GetComponentInChildren<Gun>();
             gun.Attack();
         }
@@ -42,7 +42,7 @@ namespace Assets.Scripts.Player
 
         private void UpdateFacing()
         {
-            if (Find.PlayerState.RotateBlocker.IsBlocked) return;
+            if (Find.PlayerState.RotateBlocked.IsTrue) return;
             if (Gamepad.current == null)
             {
                 var ray = Camera.main.ScreenPointToRay(Mouse.current.position.ReadValue());
@@ -63,7 +63,7 @@ namespace Assets.Scripts.Player
 
         private void UpdateVelocity()
         {
-            if (Find.PlayerState.MoveBlocker.IsBlocked) return;
+            if (Find.PlayerState.MoveBlocked.IsTrue) return;
             if (MoveVector.magnitude > 0)
             {
                 gameObject.GetComponent<Rigidbody>()

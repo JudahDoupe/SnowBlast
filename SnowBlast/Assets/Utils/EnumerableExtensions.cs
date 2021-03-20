@@ -23,5 +23,17 @@ namespace Assets.Utils
         {
             return self.TryGetValue(key, out var value) ? value : default;
         }
+
+        public static HashSet<T> AddAll<T>(this HashSet<T> self, params T[] items)
+        {
+            foreach (var item in items) self.Add(item);
+            return self;
+        }
+
+        public static HashSet<T> RemoveAll<T>(this HashSet<T> self, params T[] items)
+        {
+            foreach (var item in items) self.Remove(item);
+            return self;
+        }
     }
 }

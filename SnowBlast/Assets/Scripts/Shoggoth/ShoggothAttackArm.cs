@@ -1,10 +1,11 @@
+using Assets.Utils;
 using Assets.Utils.JBehavior;
 using UnityEngine;
 
 #nullable enable
 namespace Assets.Scripts.Shoggoth
 {
-    public class ShoggothAttackArm : MonoBehaviour
+    public class ShoggothAttackArm : MyMonoBehaviour
     {
         public float ExtensionTime = 1.0f;
         public float SwingTime = 1.0f;
@@ -12,11 +13,11 @@ namespace Assets.Scripts.Shoggoth
 
         public bool InProgress => Animation?.InProgress == true;
 
-        private readonly JBehaviorSet Animation;
+        private readonly JStartableBehavior Animation;
 
         public ShoggothAttackArm()
         {
-            Animation = new JBehaviorSet()
+            Animation = BeginBehavior
                 .Then(() =>
                 {
                     Arm.GetComponent<AttackArmCollider>().HitDetected = false;
@@ -36,7 +37,7 @@ namespace Assets.Scripts.Shoggoth
 
         public void SwingArm()
         {
-            StartCoroutine(Animation.Start());
+            Animation.Start();
         }
 
         private void SwingArm(float ratio)

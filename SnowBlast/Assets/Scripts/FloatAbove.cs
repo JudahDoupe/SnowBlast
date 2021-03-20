@@ -22,7 +22,7 @@ namespace Assets.Scripts
         {
             if (Target == null) return;
 
-            var parentObjectHeight = Target.GetMaxBounds().max.y;
+            var parentObjectHeight = Target.GetBounds().max.y;
             //var myHeight = gameObject.GetComponent<Canvas>().GetComponent<RectTransform>().rect.height;
 
             var targetPosition = Target.transform.position;

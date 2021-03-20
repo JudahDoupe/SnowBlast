@@ -16,7 +16,12 @@ namespace Assets.Utils
             floater.SetTarget(subject);
             var textMesh = speechBubbleInstance.GetComponentInChildren<TextMeshProUGUI>();
             textMesh.text = directObject;
-            return () => Object.Destroy(speechBubbleInstance);
+            Find.TheCamera.Encompass(subject, speechBubbleInstance);
+            return () =>
+            {
+                Find.TheCamera.Remove(subject, speechBubbleInstance);
+                Object.Destroy(speechBubbleInstance);
+            };
         }
     }
 }
