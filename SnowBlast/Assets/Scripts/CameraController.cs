@@ -9,6 +9,10 @@ public class CameraController : MonoBehaviour
 
     private HashSet<GameObject> Encompassed = new HashSet<GameObject>();
 
+    private float Pullback = 5.0f;
+    private float MinPullback = 5.0f;
+    private float PullbackStep = 0.2f;
+
     public HashSet<GameObject> GetEncompassed()
     {
         var result = new HashSet<GameObject>(Encompassed.Where(it => it != null));
@@ -19,6 +23,9 @@ public class CameraController : MonoBehaviour
     public void Encompass(params GameObject[] gameObjects) => Encompassed.AddAll(gameObjects);
 
     public void Remove(params GameObject[] gameObjects) => Encompassed.RemoveAll(gameObjects);
+
+    private Bounds BoundsLastUpdate;
+    private bool PullingBack;
 
     void Start()
     {
@@ -31,14 +38,44 @@ public class CameraController : MonoBehaviour
     {
         var encompassed = GetEncompassed();
 
+        if (encompassed.Count == 1)
+        {
+            PullingBack = false;
+            Pullback = Mathf.Max(Pullback - PullbackStep, MinPullback);
+            Camera.main.orthographicSize = Pullback;
+            transform.position = Vector3.Lerp(transform.position, TargetPosition(encompassed.First().transform.position), 
+                Time.deltaTime * Speed);
+            return;
+        }
+
         var bounds = encompassed.GetMaxBounds();
 
-        //var left = Camera.current.WorldToScreenPoint(bounds)
+        if (bounds != BoundsLastUpdate || PullingBack)
+        {
+            BoundsLastUpdate = bounds;
 
-        // var summedposition = encompassed.Aggregate(Vector3.zero, (accum, current) => accum + current.transform.position)
-        //                      / encompassed.Count;
+            if (bounds.Corners().Any(corner =>
+            {
+                var sp = Camera.main.WorldToScreenPoint(corner);
+                return sp.x < 0 || sp.y < 0 ||
+                       sp.x > Screen.currentResolution.width
+                       || sp.y > Screen.currentResolution.height;
+            }))
+            {
+                PullingBack = true;
+                Pullback += PullbackStep;
+            }
+            else if (!PullingBack)
+            {
+                Pullback = Mathf.Max(Pullback - PullbackStep, MinPullback);
+            }
+            else
+            {
+                PullingBack = false;
+            }
 
-
+            Camera.main.orthographicSize = Pullback;
+        }
 
         transform.position = Vector3.Lerp(transform.position, TargetPosition(bounds.center), Time.deltaTime * Speed);
     }

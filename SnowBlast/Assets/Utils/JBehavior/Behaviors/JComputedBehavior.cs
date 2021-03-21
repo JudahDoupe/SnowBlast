@@ -2,37 +2,8 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Utils.JBehavior
+namespace Assets.Utils.JBehavior.Behaviors
 {
-    public interface IJBehavior
-    {
-    }
-
-    public interface IJEnumeratorBehavior : IJBehavior
-    {
-        IEnumerator Start();
-    }
-
-    public class JAnimationBehavior : IJEnumeratorBehavior
-    {
-        private readonly JComputedBehavior<int> Implementation;
-
-        public JAnimationBehavior(float duration, Action<float> callback, float[] curve)
-        {
-            Implementation = new JComputedBehavior<int>(
-                () => 0,
-                _ => duration,
-                (_, r) => callback(r),
-                curve
-            );
-        }
-
-        public IEnumerator Start()
-        {
-            return Implementation.Start();
-        }
-    }
-
     public class JComputedBehavior<T> : IJEnumeratorBehavior
     {
         private readonly Func<T, float> Duration;
@@ -62,17 +33,5 @@ namespace Assets.Utils.JBehavior
 
             Callback(initial, 1.0f);
         }
-    }
-
-    public class JActionBehavior : IJBehavior
-    {
-        private readonly Action Callback;
-
-        public JActionBehavior(Action callback)
-        {
-            Callback = callback;
-        }
-
-        public void Act() => Callback();
     }
 }

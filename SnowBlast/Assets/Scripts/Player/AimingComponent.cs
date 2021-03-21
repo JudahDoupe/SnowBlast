@@ -58,7 +58,7 @@ namespace Assets.Scripts.Player
 
         private void Bang()
         {
-            var unsay = Sayer.Say(Find.ThePlayer, "Bang!");
+            var unsay = Sayer.Say(Find.ThePlayer, "Bang!", false);
             BeginBehavior
                 .Wait(2.0f)
                 .Start(() => unsay());

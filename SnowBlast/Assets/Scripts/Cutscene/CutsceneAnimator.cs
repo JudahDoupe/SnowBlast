@@ -1,3 +1,4 @@
+#nullable enable
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -67,7 +68,7 @@ namespace Assets.Scripts.Cutscene
 
                 Func<GameObject, object, Dictionary<string, string>, JBehaviorSet> action = (subject, directObject, parameters) =>
                 {
-                    var actuals = new List<object> { subject };
+                    var actuals = new List<object?> { subject };
 
                     if (doIsString)
                     {
@@ -202,17 +203,26 @@ namespace Assets.Scripts.Cutscene
         [Action]
         private JBehaviorSet Say(GameObject subject, string directObject)
         {
-            var unsay = Sayer.Say(subject, directObject);
-            return new JBehaviorSet(); // .Wait(2.0f).Then(() => unsay());
+            var done = false;
+            Action? unsay = null;
+            return new JBehaviorSet().Then(() =>
+            {
+                unsay = Sayer.Say(subject, directObject, true);
+                
+                Find.SceneState.SetInteraction(new InteractionAction(() =>
+                {
+                    done = true;
+                }), false);
+            }).While(() => !done).Then(() => unsay?.Invoke());
         }
     }
 
     [AttributeUsage(AttributeTargets.Method)]
     public class ActionAttribute : Attribute
     {
-        public readonly string Name;
+        public readonly string? Name;
 
-        public ActionAttribute(string verb = null)
+        public ActionAttribute(string? verb = null)
         {
             Name = verb;
         }

@@ -39,14 +39,16 @@ namespace Assets.Utils
 
             if (rect != null)
             {
-                var uiScaleFactor = 1.0f;
-                var bounds = new Bounds(rect.position, new Vector3(rect.rect.width, rect.rect.height, 0.0f) * uiScaleFactor);
+                var uiScaleFactor = rect.transform.lossyScale;
+                var bounds = new Bounds(rect.position, new Vector3(rect.rect.width * uiScaleFactor.x, 
+                    rect.rect.height * uiScaleFactor.y, 0.0f));
 
                 if (rect.childCount > 0)
                 {
                     foreach (RectTransform child in rect)
                     {
-                        Bounds childBounds = new Bounds(child.position, new Vector3(child.rect.width, child.rect.height, 0.0f) * uiScaleFactor);
+                        Bounds childBounds = new Bounds(child.position, new Vector3(child.rect.width * uiScaleFactor.x, 
+                            child.rect.height * uiScaleFactor.y, 0.0f));
                         bounds.Encapsulate(childBounds);
                     }
                 }

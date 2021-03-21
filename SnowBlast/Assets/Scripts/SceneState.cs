@@ -1,4 +1,6 @@
-﻿using Assets.Utils;
+﻿#nullable enable
+using Assets.Scripts.Cutscene;
+using Assets.Utils;
 using UnityEngine;
 
 namespace Assets.Scripts
@@ -7,8 +9,30 @@ namespace Assets.Scripts
     {
         public bool WeaponsFree = true;
 
-        [HideInInspector]
-        public readonly LogicalOrSet InteractionPromptShown = new LogicalOrSet();
+        private IInteraction? InteractionObject;
+
+        public void SetInteraction(IInteraction interactionObject, bool showInteractionPrompt)
+        {
+            InteractionObject = interactionObject;
+            if (showInteractionPrompt)
+            {
+                SetInteractionPrompt(true);
+            }
+        }
+
+        public void ClearInteraction(IInteraction interactionObject)
+        {
+            if (InteractionObject == interactionObject)
+            {
+                InteractionObject = null;
+                SetInteractionPrompt(false);
+            }
+        }
+
+        private void SetInteractionPrompt(bool shown)
+        {
+            GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(shown);
+        }
 
         void Start()
         {
@@ -16,11 +40,14 @@ namespace Assets.Scripts
             {
                 Find.PlayerState.WeaponsBlocked.Add(this);
             }
+        }
 
-            InteractionPromptShown.Subscribe(shown =>
-            {
-                GameObject.Find("GUI").transform.Find("InteractionPrompt").gameObject.SetActive(shown);
-            });
+        void OnConfirmInteraction()
+        {
+            SetInteractionPrompt(false);
+            var original = InteractionObject;
+            InteractionObject = null;
+            original?.Play();
         }
     }
 }

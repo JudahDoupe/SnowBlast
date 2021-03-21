@@ -1,4 +1,5 @@
 Player face Mark
 Player moveTo Mark with speed 5
 Player face Pyramid
-Player say ...
+Player say Ereshkigal!
+Pyramid say Welcome, user Ayla. I predicted your arrival.

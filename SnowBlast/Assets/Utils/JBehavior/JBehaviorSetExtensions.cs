@@ -1,5 +1,6 @@
 #nullable enable
 using System;
+using Assets.Utils.JBehavior.Behaviors;
 
 namespace Assets.Utils.JBehavior
 {
@@ -29,6 +30,13 @@ namespace Assets.Utils.JBehavior
             where T : JBehaviorSet
         {
             self.Then(duration, _ => { });
+            return self;
+        }
+
+        public static T While<T>(this T self, Func<bool> condition)
+            where T : JBehaviorSet
+        {
+            self.Append(new JWaitBehavior(condition));
             return self;
         }
     }

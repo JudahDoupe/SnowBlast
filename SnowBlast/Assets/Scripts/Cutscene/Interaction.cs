@@ -1,43 +1,36 @@
+using System;
 using Assets.Utils;
-using Assets.Utils.JBehavior;
 using UnityEngine;
-using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Cutscene
 {
-    public class Interaction : MonoBehaviour
+    public interface IInteraction
+    {
+        void Play();
+    }
+
+    public class InteractionAction: IInteraction
+    {
+        private readonly Action Action;
+
+        public InteractionAction(Action action)
+        {
+            Action = action;
+        }
+
+        public void Play()
+        {
+            Action();
+        }
+    }
+
+    public class Interaction : MonoBehaviour, IInteraction
     {
         public string InteractionPrompt = "Interact";
 
         public TextAsset CutsceneAsset;
 
-        private readonly LogicalOrSet InputBlocked = new LogicalOrSet();
-
         private bool Done;
-
-        void Start()
-        {
-            var input = GetComponent<PlayerInput>();
-
-            Find.SceneState.InteractionPromptShown.Subscribe(shown =>
-            {
-                if (shown && PlayerIntersected()) InputBlocked.Remove(this);
-                else InputBlocked.Add(this);
-            });
-
-            InputBlocked.Subscribe(inputBlocked =>
-            {
-                if (inputBlocked)
-                {
-                    input.DeactivateInput();
-                }
-                else
-                {
-                    input.ActivateInput();
-                }
-            });
-            InputBlocked.Add(this);
-        }
 
         void Update()
         {
@@ -48,11 +41,11 @@ namespace Assets.Scripts.Cutscene
 
             if (PlayerIntersected())
             {
-                Find.SceneState.InteractionPromptShown.Add(this);
+                Find.SceneState.SetInteraction(this, true);
             }
             else
             {
-                Find.SceneState.InteractionPromptShown.Remove(this);
+                Find.SceneState.ClearInteraction(this);
             }
         }
 
@@ -62,11 +55,9 @@ namespace Assets.Scripts.Cutscene
             return player != null && this.GetBounds().Intersects(player.GetBounds());
         }
 
-        void OnConfirm()
+        public void Play()
         {
-            Find.SceneState.InteractionPromptShown.Remove(this);
             Done = true;
-            InputBlocked.Add("Done");
             var unblock = Find.PlayerState.BlockAll();
             var animation = new CutsceneAnimator(CutsceneAsset).Create();
             StartCoroutine(animation.Begin(() => unblock()));

@@ -23,11 +23,11 @@ namespace Assets.Scripts
             if (Target == null) return;
 
             var parentObjectHeight = Target.GetBounds().max.y;
-            //var myHeight = gameObject.GetComponent<Canvas>().GetComponent<RectTransform>().rect.height;
+            var myBounds = this.GetBounds();
 
             var targetPosition = Target.transform.position;
 
-            gameObject.transform.position = new Vector3(targetPosition.x, targetPosition.y + parentObjectHeight,
+            gameObject.transform.position = new Vector3(targetPosition.x, parentObjectHeight + myBounds.extents.y,
                 targetPosition.z);
         }
     }
