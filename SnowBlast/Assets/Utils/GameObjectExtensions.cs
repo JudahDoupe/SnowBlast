@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Collections.Generic;
 using System.Linq;
 using FluentAssertions;
 using UnityEngine;
@@ -15,6 +15,18 @@ namespace Assets.Utils
             }
 
             return self;
+        }
+
+        public static Bounds GetMaxBounds(this IEnumerable<GameObject> self)
+        {
+            var items = self.ToList();
+            var bounds = items.First().GetBounds();
+            foreach (var go in items.Skip(1))
+            {
+                bounds.Encapsulate(go.GetBounds());
+            }
+
+            return bounds;
         }
 
         public static Bounds GetBounds(this GameObject g) => GetBounds(g.transform);
@@ -54,6 +66,23 @@ namespace Assets.Utils
                 b.Encapsulate(r.bounds);
             }
             return b;
+        }
+
+        public static IEnumerable<Vector3> Corners(this Bounds bounds)
+        {
+            var pmin = bounds.min;
+            var pmax = bounds.max;
+
+            foreach (var x in new[] {pmin.x, pmax.x})
+            {
+                foreach (var y in new[] {pmin.y, pmax.y})
+                {
+                    foreach (var z in new[] {pmin.z, pmax.z})
+                    {
+                        yield return new Vector3(x, y, z);
+                    }
+                }
+            }
         }
     }
 }

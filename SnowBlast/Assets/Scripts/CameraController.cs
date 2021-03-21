@@ -31,10 +31,16 @@ public class CameraController : MonoBehaviour
     {
         var encompassed = GetEncompassed();
 
-        var summedposition = encompassed.Aggregate(Vector3.zero, (accum, current) => accum + current.transform.position)
-                             / encompassed.Count;
+        var bounds = encompassed.GetMaxBounds();
 
-        transform.position = Vector3.Lerp(transform.position, TargetPosition(summedposition), Time.deltaTime * Speed);
+        //var left = Camera.current.WorldToScreenPoint(bounds)
+
+        // var summedposition = encompassed.Aggregate(Vector3.zero, (accum, current) => accum + current.transform.position)
+        //                      / encompassed.Count;
+
+
+
+        transform.position = Vector3.Lerp(transform.position, TargetPosition(bounds.center), Time.deltaTime * Speed);
     }
 
     private Vector3 TargetPosition(Vector3 target) => target + new Vector3(-1, 1, -1).normalized * 25;
