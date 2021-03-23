@@ -10,7 +10,6 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 {
     public class SerialTweener: ITweener, IEnumeratorTween
     {
-        public bool InProgress { get; private set; }
         private readonly List<ITween> Behaviors = new List<ITween>();
 
         public void Append(ITween behavior)
@@ -25,8 +24,6 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 
         public IEnumerator Begin(Action? onComplete = null)
         {
-            InProgress.Should().Be(false, "A single behavior set should only be started once.");
-            InProgress = true;
             var remainder = RunInitialActions();
             if (onComplete is { })
             {
@@ -64,8 +61,6 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
                     while (e.MoveNext()) yield return e.Current;
                 }
             }
-
-            InProgress = false;
         }
 
         public IEnumerator Start()

@@ -38,7 +38,7 @@ namespace Assets.Scripts.Player
         public void StopAnimation()
         {
             gameObject.SetActive(false);
-            StopAllCoroutines();
+            Animation.Stop();
         }
 
         private void RenderAngle(float newAngle)

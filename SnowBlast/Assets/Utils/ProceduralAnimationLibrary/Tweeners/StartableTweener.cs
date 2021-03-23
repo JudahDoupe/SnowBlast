@@ -11,6 +11,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
     {
         private readonly ITweener Implementation;
         private readonly MonoBehaviour GameObject;
+        private Coroutine? Coroutine;
 
         public StartableTweener(ITweener implementation, MonoBehaviour gameObject)
         {
@@ -18,10 +19,11 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
             GameObject = gameObject;
         }
 
-        public Coroutine Start(Action? onComplete = null)
+        public void Start(Action? onComplete = null)
         {
             GameObject.Should().NotBeNull();
-            return GameObject.StartCoroutine(Begin(onComplete));
+            Coroutine.Should().BeNull();
+            Coroutine = GameObject.StartCoroutine(Begin(onComplete));
         }
 
         public void Append(ITween tween)
@@ -31,9 +33,22 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 
         public IEnumerator Begin(Action? onCompleteCallback)
         {
-            return Implementation.Begin(onCompleteCallback);
+            return Implementation.Begin(() =>
+            {
+                Coroutine = null;
+                onCompleteCallback?.Invoke();
+            });
         }
 
-        public bool InProgress => Implementation.InProgress;
+        public bool InProgress => Coroutine != null;
+
+        public void Stop()
+        {
+            if (Coroutine != null)
+            {
+                GameObject.StopCoroutine(Coroutine);
+                Coroutine = null;
+            }
+        }
     }
 }

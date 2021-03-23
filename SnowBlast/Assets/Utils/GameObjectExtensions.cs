@@ -65,7 +65,9 @@ namespace Assets.Utils
             var renderers = g.GetComponentsInChildren<Renderer>()
                 .Where(it => it.gameObject.GetComponent<ParticleSystem>() == null)
                 .ToList();
-            renderers.Should().NotBeEmpty("Attempt to get null bounds!");
+
+            if (!renderers.Any()) return new Bounds(g.position, Vector3.zero);
+
             var first = renderers.First();
             var b = new Bounds(first.bounds.center, first.bounds.size);
             foreach (var r in renderers.Skip(1))

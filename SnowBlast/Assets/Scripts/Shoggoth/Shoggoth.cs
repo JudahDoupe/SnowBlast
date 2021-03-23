@@ -72,7 +72,7 @@ namespace Assets.Scripts.Shoggoth
 
         public void StopMovement()
         {
-            StopAllCoroutines();
+            LurchBehavior.Stop();
             SetVelocity(0);
             var slimeTrailEmission = SlimeTrail.emission;
             slimeTrailEmission.enabled = false;

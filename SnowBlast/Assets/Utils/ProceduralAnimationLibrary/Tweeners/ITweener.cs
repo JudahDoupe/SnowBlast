@@ -11,7 +11,5 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
         void Append(ITween tween);
 
         IEnumerator Begin(Action? onCompleteCallback = null);
-        
-        bool InProgress { get; }
     }
 }

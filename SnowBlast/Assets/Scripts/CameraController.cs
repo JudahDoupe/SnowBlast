@@ -28,6 +28,9 @@ public class CameraController : MonoBehaviour
         var player = Find.ThePlayer;
         transform.position = TargetPosition(player.transform.position);
         transform.LookAt(player.gameObject.transform);
+
+        var camera = GetComponent<Camera>();
+        MinOrthographicSize = camera.orthographicSize;
     }
 
     void FixedUpdate ()
