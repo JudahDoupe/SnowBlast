@@ -17,6 +17,11 @@ namespace Assets.Utils
             return self;
         }
 
+        public static IEnumerable<Transform> Children(this Transform obj)
+        {
+            foreach (Transform child in obj) yield return child;
+        }
+
         public static Bounds GetMaxBounds(this IEnumerable<GameObject> self)
         {
             var items = self.ToList();
@@ -40,14 +45,14 @@ namespace Assets.Utils
             if (rect != null)
             {
                 var uiScaleFactor = rect.transform.lossyScale;
-                var bounds = new Bounds(rect.position, new Vector3(rect.rect.width * uiScaleFactor.x, 
+                var bounds = new Bounds(rect.position, rect.transform.rotation * new Vector3(rect.rect.width * uiScaleFactor.x, 
                     rect.rect.height * uiScaleFactor.y, 0.0f));
 
                 if (rect.childCount > 0)
                 {
                     foreach (RectTransform child in rect)
                     {
-                        Bounds childBounds = new Bounds(child.position, new Vector3(child.rect.width * uiScaleFactor.x, 
+                        Bounds childBounds = new Bounds(child.position, rect.transform.rotation * new Vector3(child.rect.width * uiScaleFactor.x, 
                             child.rect.height * uiScaleFactor.y, 0.0f));
                         bounds.Encapsulate(childBounds);
                     }

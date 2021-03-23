@@ -1,10 +1,11 @@
 using Assets.Utils;
-using Assets.Utils.JBehavior;
+using Assets.Utils.ProceduralAnimationLibrary;
+using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 
 namespace Assets.Scripts.Shoggoth
 {
-    public class Shoggoth : MyMonoBehaviour
+    public class Shoggoth : MonoBehaviour
     {
         public float LurchStartSpeed = 1;
         public float LurchMinSpeed = 0.5f;
@@ -12,12 +13,12 @@ namespace Assets.Scripts.Shoggoth
 
         private ParticleSystem SlimeTrail;
 
-        private JStartableBehavior LurchBehavior;
+        private StartableTweener LurchBehavior;
         private ShoggothAttackArm AttackArm;
 
         public Shoggoth()
         {
-            LurchBehavior = BeginBehavior.Then(() =>
+            LurchBehavior = this.BeginSerial().Then(() =>
                 {
                     var slimeTrailEmission = SlimeTrail.emission;
                     slimeTrailEmission.enabled = true;

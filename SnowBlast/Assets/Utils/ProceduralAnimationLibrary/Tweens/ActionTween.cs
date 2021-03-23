@@ -1,12 +1,12 @@
 ﻿using System;
 
-namespace Assets.Utils.JBehavior.Behaviors
+namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
 {
-    public class JActionBehavior : IJBehavior
+    public class ActionTween : ITween
     {
         private readonly Action Callback;
 
-        public JActionBehavior(Action callback)
+        public ActionTween(Action callback)
         {
             Callback = callback;
         }

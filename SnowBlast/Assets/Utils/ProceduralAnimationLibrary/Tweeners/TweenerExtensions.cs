@@ -1,42 +1,42 @@
 #nullable enable
 using System;
-using Assets.Utils.JBehavior.Behaviors;
+using Assets.Utils.ProceduralAnimationLibrary.Tweens;
 
-namespace Assets.Utils.JBehavior
+namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 {
-    public static class JBehaviorSetExtensions
+    public static class TweenerExtensions
     {
         public static T Then<T>(this T self, float duration, Action<float> callback, float[]? curve = null)
-            where T: JBehaviorSet
+            where T: ITweener
         {
-            self.Append(new JAnimationBehavior(duration, callback, curve ?? JCurve.Linear));
+            self.Append(new TimedTween(duration, callback, curve ?? JCurve.Linear));
             return self;
         }
 
         public static TSelf Computed<TSelf, TState>(this TSelf self, Func<TState> initial, Func<TState, float> duration, Action<TState, float> callback, float[]? curve = null)
-            where TSelf : JBehaviorSet
+            where TSelf : ITweener
         {
             self.Append(new JComputedBehavior<TState>(initial, duration, callback, curve ?? JCurve.Linear));
             return self;
         }
 
         public static T Then<T>(this T self, Action callback)
-            where T : JBehaviorSet
+            where T : ITweener
         {
-            self.Append(new JActionBehavior(callback));
+            self.Append(new ActionTween(callback));
             return self;
         }
         public static T Wait<T>(this T self, float duration)
-            where T : JBehaviorSet
+            where T : ITweener
         {
             self.Then(duration, _ => { });
             return self;
         }
 
         public static T While<T>(this T self, Func<bool> condition)
-            where T : JBehaviorSet
+            where T : ITweener
         {
-            self.Append(new JWaitBehavior(condition));
+            self.Append(new ConditionalWaitTween(condition));
             return self;
         }
     }

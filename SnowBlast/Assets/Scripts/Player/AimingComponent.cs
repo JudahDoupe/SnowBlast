@@ -1,12 +1,13 @@
 using Assets.Utils;
-using Assets.Utils.JBehavior;
+using Assets.Utils.ProceduralAnimationLibrary;
+using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Player
 {
 #nullable enable
-    public class AimingComponent : MyMonoBehaviour
+    public class AimingComponent : MonoBehaviour
     {
         private AimingLines? AimingLines;
 
@@ -59,7 +60,7 @@ namespace Assets.Scripts.Player
         private void Bang()
         {
             var unsay = Sayer.Say(Find.ThePlayer, "Bang!", false);
-            BeginBehavior
+            this.BeginSerial()
                 .Wait(2.0f)
                 .Start(() => unsay());
         }

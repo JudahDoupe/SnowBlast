@@ -2,9 +2,9 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Utils.JBehavior.Behaviors
+namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
 {
-    public class JComputedBehavior<T> : IJEnumeratorBehavior
+    public class JComputedBehavior<T> : IEnumeratorTween
     {
         private readonly Func<T, float> Duration;
         private readonly Action<T, float> Callback;
@@ -28,7 +28,7 @@ namespace Assets.Utils.JBehavior.Behaviors
             {
                 var ratio = (Time.fixedTime - timeIn) / duration;
                 Callback(initial, JCurve.CurveRatio(ratio, Curve));
-                yield return new WaitForEndOfFrame();
+                yield return new WaitForFixedUpdate();
             }
 
             Callback(initial, 1.0f);

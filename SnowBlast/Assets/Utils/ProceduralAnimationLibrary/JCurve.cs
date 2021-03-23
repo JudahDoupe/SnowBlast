@@ -1,6 +1,6 @@
 using System.Linq;
 
-namespace Assets.Utils.JBehavior
+namespace Assets.Utils.ProceduralAnimationLibrary
 {
     public static class JCurve
     {

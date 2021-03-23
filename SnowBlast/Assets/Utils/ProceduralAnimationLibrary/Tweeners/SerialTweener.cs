@@ -2,23 +2,23 @@ using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
-using Assets.Utils.JBehavior.Behaviors;
+using Assets.Utils.ProceduralAnimationLibrary.Tweens;
 using FluentAssertions;
 
 #nullable  enable
-namespace Assets.Utils.JBehavior
+namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 {
-    public class JBehaviorSet
+    public class SerialTweener: ITweener, IEnumeratorTween
     {
-        public bool InProgress;
-        private readonly List<IJBehavior> Behaviors = new List<IJBehavior>();
+        public bool InProgress { get; private set; }
+        private readonly List<ITween> Behaviors = new List<ITween>();
 
-        public void Append(IJBehavior behavior)
+        public void Append(ITween behavior)
         {
             Behaviors.Add(behavior);
         }
 
-        public void Append(JBehaviorSet other)
+        public void Append(SerialTweener other)
         {
             Behaviors.AddRange(other.Behaviors);
         }
@@ -30,16 +30,16 @@ namespace Assets.Utils.JBehavior
             var remainder = RunInitialActions();
             if (onComplete is { })
             {
-                remainder.Add(new JActionBehavior(onComplete));
+                remainder.Add(new ActionTween(onComplete));
             }
             return StartEnumeration(remainder);
         }
 
-        private List<IJBehavior> RunInitialActions()
+        private List<ITween> RunInitialActions()
         {
             var remainder = Behaviors.SkipWhile(b =>
             {
-                if (b is JActionBehavior action)
+                if (b is ActionTween action)
                 {
                     action.Act();
                     return true;
@@ -50,15 +50,15 @@ namespace Assets.Utils.JBehavior
             return remainder.ToList();
         }
 
-        private IEnumerator StartEnumeration(IEnumerable<IJBehavior> jBehaviors)
+        private IEnumerator StartEnumeration(IEnumerable<ITween> jBehaviors)
         {
             foreach (var behavior in jBehaviors)
             {
-                if (behavior is JActionBehavior action)
+                if (behavior is ActionTween action)
                 {
                     action.Act();
                 }
-                else if (behavior is IJEnumeratorBehavior enumerator)
+                else if (behavior is IEnumeratorTween enumerator)
                 {
                     var e = enumerator.Start();
                     while (e.MoveNext()) yield return e.Current;
@@ -66,6 +66,11 @@ namespace Assets.Utils.JBehavior
             }
 
             InProgress = false;
+        }
+
+        public IEnumerator Start()
+        {
+            return Begin();
         }
     }
 }

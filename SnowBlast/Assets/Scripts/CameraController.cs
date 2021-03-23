@@ -1,3 +1,4 @@
+using System;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Utils;
@@ -7,11 +8,9 @@ public class CameraController : MonoBehaviour
 {
     public float Speed = 1.0f;
 
-    private HashSet<GameObject> Encompassed = new HashSet<GameObject>();
+    private readonly HashSet<GameObject> Encompassed = new HashSet<GameObject>();
 
-    private float Pullback = 5.0f;
-    private float MinPullback = 5.0f;
-    private float PullbackStep = 0.2f;
+    private float MinOrthographicSize = 5.0f;
 
     public HashSet<GameObject> GetEncompassed()
     {
@@ -24,9 +23,6 @@ public class CameraController : MonoBehaviour
 
     public void Remove(params GameObject[] gameObjects) => Encompassed.RemoveAll(gameObjects);
 
-    private Bounds BoundsLastUpdate;
-    private bool PullingBack;
-
     void Start()
     {
         var player = Find.ThePlayer;
@@ -37,47 +33,50 @@ public class CameraController : MonoBehaviour
     void FixedUpdate ()
     {
         var encompassed = GetEncompassed();
-
-        if (encompassed.Count == 1)
+        var targetOrthographicSize = MinOrthographicSize;
+        if (encompassed.Count == 0)
         {
-            PullingBack = false;
-            Pullback = Mathf.Max(Pullback - PullbackStep, MinPullback);
-            Camera.main.orthographicSize = Pullback;
-            transform.position = Vector3.Lerp(transform.position, TargetPosition(encompassed.First().transform.position), 
-                Time.deltaTime * Speed);
             return;
         }
 
-        var bounds = encompassed.GetMaxBounds();
-
-        if (bounds != BoundsLastUpdate || PullingBack)
+        Vector3 target;
+        var camera = GetComponent<Camera>();
+        if (encompassed.Count == 1)
         {
-            BoundsLastUpdate = bounds;
+            target = encompassed.First().transform.position;
+        }
+        else
+        {
+            var verticalSizeHeuristic = 1.0f;
+            var horizontalSizeHeuristic =
+                verticalSizeHeuristic * Screen.currentResolution.width / Screen.currentResolution.height;
+            
 
-            if (bounds.Corners().Any(corner =>
-            {
-                var sp = Camera.main.WorldToScreenPoint(corner);
-                return sp.x < 0 || sp.y < 0 ||
-                       sp.x > Screen.currentResolution.width
-                       || sp.y > Screen.currentResolution.height;
-            }))
-            {
-                PullingBack = true;
-                Pullback += PullbackStep;
-            }
-            else if (!PullingBack)
-            {
-                Pullback = Mathf.Max(Pullback - PullbackStep, MinPullback);
-            }
-            else
-            {
-                PullingBack = false;
-            }
+            var bounds = encompassed.GetMaxBounds();
+            target = bounds.center;
 
-            Camera.main.orthographicSize = Pullback;
+            var points = bounds.Corners()
+                .Select(corner => Quaternion.LookRotation(transform.forward, transform.up) * corner)
+                .ToList();
+
+            var minX = points.Select(it => it.x).Min();
+            var maxX = points.Select(it => it.x).Max();
+            var minY = points.Select(it => it.y).Min();
+            var maxY = points.Select(it => it.y).Max();
+
+            var deltaX = (maxX - minX) / horizontalSizeHeuristic;
+            var deltaY = (maxY - minY) / verticalSizeHeuristic;
+            targetOrthographicSize = Mathf.Max(Mathf.Max(deltaY, deltaX) / 2, MinOrthographicSize);
         }
 
-        transform.position = Vector3.Lerp(transform.position, TargetPosition(bounds.center), Time.deltaTime * Speed);
+        
+        if (Math.Abs(camera.orthographicSize - targetOrthographicSize) > 0.05f)
+        {
+            var newcs = Mathf.Lerp(camera.orthographicSize, targetOrthographicSize, Time.deltaTime * Speed);
+            camera.orthographicSize = newcs;
+        }
+
+        transform.position = Vector3.Lerp(transform.position, TargetPosition(target), Time.deltaTime * Speed);
     }
 
     private Vector3 TargetPosition(Vector3 target) => target + new Vector3(-1, 1, -1).normalized * 25;

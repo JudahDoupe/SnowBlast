@@ -1,11 +1,12 @@
 using Assets.Utils;
-using Assets.Utils.JBehavior;
+using Assets.Utils.ProceduralAnimationLibrary;
+using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 
 #nullable enable
 namespace Assets.Scripts.Shoggoth
 {
-    public class ShoggothAttackArm : MyMonoBehaviour
+    public class ShoggothAttackArm : MonoBehaviour
     {
         public float ExtensionTime = 1.0f;
         public float SwingTime = 1.0f;
@@ -13,11 +14,11 @@ namespace Assets.Scripts.Shoggoth
 
         public bool InProgress => Animation?.InProgress == true;
 
-        private readonly JStartableBehavior Animation;
+        private readonly StartableTweener Animation;
 
         public ShoggothAttackArm()
         {
-            Animation = BeginBehavior
+            Animation = this.BeginSerial()
                 .Then(() =>
                 {
                     Arm.GetComponent<AttackArmCollider>().HitDetected = false;

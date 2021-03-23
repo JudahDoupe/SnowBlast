@@ -2,13 +2,13 @@
 using System.Collections;
 using UnityEngine;
 
-namespace Assets.Utils.JBehavior.Behaviors
+namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
 {
-    public class JWaitBehavior : IJEnumeratorBehavior
+    public class ConditionalWaitTween : IEnumeratorTween
     {
         private readonly Func<bool> Condition;
 
-        public JWaitBehavior(Func<bool> condition)
+        public ConditionalWaitTween(Func<bool> condition)
         {
             Condition = condition;
         }

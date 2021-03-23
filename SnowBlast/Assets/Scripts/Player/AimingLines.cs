@@ -1,11 +1,12 @@
 using System;
 using Assets.Utils;
-using Assets.Utils.JBehavior;
+using Assets.Utils.ProceduralAnimationLibrary;
+using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 
 namespace Assets.Scripts.Player
 {
-    public class AimingLines : MyMonoBehaviour
+    public class AimingLines : MonoBehaviour
     {
         public float AnimationDuration = 0.5f;
         public float StartingAngle = 90;
@@ -13,11 +14,11 @@ namespace Assets.Scripts.Player
 
         private LineRenderer LineRenderer => GetComponent<LineRenderer>();
     
-        public readonly JStartableBehavior Animation;
+        public readonly StartableTweener Animation;
 
         public AimingLines()
         {
-            Animation = BeginBehavior.Then(() => gameObject.SetActive(true))
+            Animation = this.BeginSerial().Then(() => gameObject.SetActive(true))
                 .Then(AnimationDuration, ratio => RenderAngle(StartingAngle * (1.0f - ratio)))
                 .Then(() => gameObject.SetActive(false));
         }

@@ -8,7 +8,7 @@ namespace Assets.Utils
 {
     public static class Sayer
     {
-        public static Action Say(GameObject subject, string directObject, bool confirmWithA)
+        public static Action Say(GameObject subject, string directObject, bool showConfirmWithAOnBubble)
         {
             var template = ObjectPool.Instance.Objects["SpeechBubble"];
             var instance = Object.Instantiate(template);
@@ -18,7 +18,7 @@ namespace Assets.Utils
             textMesh.text = directObject;
             Find.TheCamera.Encompass(subject, instance);
 
-            if (!confirmWithA)
+            if (!showConfirmWithAOnBubble)
             {
                 var confirmText = instance.transform.Find("ConfirmWithA");
                 confirmText.gameObject.SetActive(false);

@@ -1,13 +1,14 @@
 using Assets.Utils;
-using Assets.Utils.JBehavior;
+using Assets.Utils.ProceduralAnimationLibrary;
+using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 using UnityEngine.InputSystem;
 
 namespace Assets.Scripts.Player
 {
-    public class DashComponent : MyMonoBehaviour
+    public class DashComponent : MonoBehaviour
     {
-        public readonly JStartableBehavior DashAnimation;
+        public readonly StartableTweener DashAnimation;
         private float DashEndTime;
         private Vector3 DashVector;
         private ParticleSystem DashLines = default!;
@@ -18,7 +19,7 @@ namespace Assets.Scripts.Player
 
         public DashComponent()
         {
-            DashAnimation = BeginBehavior.Then(() =>
+            DashAnimation = this.BeginSerial().Then(() =>
                 {
                     Find.PlayerState.MoveBlocked.Add(this);
                     Find.PlayerState.RotateBlocked.Add(this);

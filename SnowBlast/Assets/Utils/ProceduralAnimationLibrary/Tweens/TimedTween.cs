@@ -1,13 +1,13 @@
 ﻿using System;
 using System.Collections;
 
-namespace Assets.Utils.JBehavior.Behaviors
+namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
 {
-    public class JAnimationBehavior : IJEnumeratorBehavior
+    public class TimedTween : IEnumeratorTween
     {
         private readonly JComputedBehavior<int> Implementation;
 
-        public JAnimationBehavior(float duration, Action<float> callback, float[] curve)
+        public TimedTween(float duration, Action<float> callback, float[] curve)
         {
             Implementation = new JComputedBehavior<int>(
                 () => 0,

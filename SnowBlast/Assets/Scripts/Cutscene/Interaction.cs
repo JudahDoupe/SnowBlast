@@ -1,5 +1,7 @@
 using System;
 using Assets.Utils;
+using Assets.Utils.ProceduralAnimationLibrary;
+using Assets.Utils.ProceduralAnimationLibrary.Cutscenes;
 using UnityEngine;
 
 namespace Assets.Scripts.Cutscene
@@ -59,7 +61,7 @@ namespace Assets.Scripts.Cutscene
         {
             Done = true;
             var unblock = Find.PlayerState.BlockAll();
-            var animation = new CutsceneAnimator(CutsceneAsset).Create();
+            var animation = CutsceneParser.Parse(CutsceneAsset.text);
             StartCoroutine(animation.Begin(() => unblock()));
         }
     }
