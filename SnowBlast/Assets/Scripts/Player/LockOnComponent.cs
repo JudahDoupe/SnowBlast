@@ -9,7 +9,7 @@ namespace Assets.Scripts.Player
 #nullable enable
     public class LockOnComponent : MonoBehaviour
     {
-        public GameObject? LockOnTarget { get; private set; } = null;
+        private GameObject? LockOnTarget = null;
         private IDisposable? LockOnDispose = null;
         private bool RightStickBumped = false;
         private const float BumpTrigger = 0.5f;

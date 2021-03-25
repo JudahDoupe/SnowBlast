@@ -14,6 +14,7 @@ namespace Assets.Scripts.Scene
         {
             var myPos = GetComponent<RectTransform>();
             var circle = transform.Find("Circle").GetComponent<RectTransform>();
+            var circleEnd = transform.Find("CircleEnd").GetComponent<RectTransform>();
             var tail = transform.Find("Tail").GetComponent<RectTransform>();
 
             var uiSize = GameObject.Find("GUI").GetComponent<RectTransform>().rect;
@@ -21,18 +22,21 @@ namespace Assets.Scripts.Scene
             myPos.sizeDelta = new Vector2(uiSize.width, uiSize.height);
             myPos.localPosition = new Vector3(uiSize.width, 0, 0);
 
-            // var aspectRatio = uiSize.height / uiSize.width;
-
-            // circle.localScale = new Vector3(aspectRatio, 1.0f);
-
             circle.sizeDelta = new Vector2(uiSize.height, uiSize.height);
+
             tail.sizeDelta = new Vector2(uiSize.width, uiSize.height);
             tail.localPosition = new Vector3(uiSize.height / 2, 0, 0);
 
+            circleEnd.sizeDelta = new Vector2(uiSize.height, uiSize.height);
+            circleEnd.localPosition = new Vector3(uiSize.width, 0, 0);
+            
+            Debug.Log(uiSize.width + uiSize.height);
+
+
             this.BeginSerial()
-                .Then(5.0f,
+                .Then(1.0f,
                     new Vector3(uiSize.width, 0, 0),
-                    new Vector3(-uiSize.height / 2, 0, 0), 
+                    new Vector3(-uiSize.width - uiSize.height, 0, 0),
                     r =>
                     {
                         myPos.localPosition = r;
