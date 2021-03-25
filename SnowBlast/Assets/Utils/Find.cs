@@ -1,5 +1,6 @@
 ﻿using Assets.Scripts;
 using Assets.Scripts.Player;
+using Assets.Scripts.Scene;
 using UnityEngine;
 
 namespace Assets.Utils

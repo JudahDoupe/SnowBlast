@@ -1,10 +1,9 @@
 using System;
 using Assets.Utils;
-using Assets.Utils.ProceduralAnimationLibrary;
 using Assets.Utils.ProceduralAnimationLibrary.Cutscenes;
 using UnityEngine;
 
-namespace Assets.Scripts.Cutscene
+namespace Assets.Scripts.Scene
 {
     public interface IInteraction
     {

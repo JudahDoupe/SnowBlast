@@ -1,6 +1,7 @@
 #nullable enable
 using System;
 using Assets.Utils.ProceduralAnimationLibrary.Tweens;
+using UnityEngine;
 
 namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 {
@@ -11,6 +12,16 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
         {
             self.Append(new TimedTween(duration, callback, curve ?? JCurve.Linear));
             return self;
+        }
+
+        public static T Then<T>(this T self, float duration, Vector3 start, Vector3 end, Action<Vector3> callback,
+            float[]? curve = null) where T : ITweener
+        {
+            return self.Then(duration, r =>
+            {
+                var n = Vector3.Lerp(start, end, r);
+                callback(n);
+            }, curve);
         }
 
         public static TSelf Computed<TSelf, TState>(this TSelf self, Func<TState> initial, Func<TState, float> duration, Action<TState, float> callback, float[]? curve = null)

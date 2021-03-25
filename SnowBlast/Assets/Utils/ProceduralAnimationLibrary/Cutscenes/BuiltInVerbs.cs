@@ -1,9 +1,10 @@
 ﻿#nullable enable
 using System;
-using Assets.Scripts.Cutscene;
+using Assets.Scripts.Scene;
 using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using Assets.Utils.ProceduralAnimationLibrary.Tweens;
 using UnityEngine;
+using UnityEngine.SceneManagement;
 
 namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
 {
@@ -77,7 +78,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
         {
             return new ActionTween(() =>
             {
-                Debug.Log("Hello world!");
+                SceneManager.LoadScene(directObject);
             });
         }
     }

@@ -1,9 +1,8 @@
 ﻿#nullable enable
-using Assets.Scripts.Cutscene;
 using Assets.Utils;
 using UnityEngine;
 
-namespace Assets.Scripts
+namespace Assets.Scripts.Scene
 {
     public class SceneState : MonoBehaviour
     {
