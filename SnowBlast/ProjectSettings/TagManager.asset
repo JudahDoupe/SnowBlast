@@ -5,6 +5,7 @@ TagManager:
   serializedVersion: 2
   tags:
   - SceneState
+  - Transition
   layers:
   - Default
   - TransparentFX

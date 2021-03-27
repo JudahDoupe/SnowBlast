@@ -5,6 +5,7 @@ using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using Assets.Utils.ProceduralAnimationLibrary.Tweens;
 using UnityEngine;
 using UnityEngine.SceneManagement;
+using Object = UnityEngine.Object;
 
 namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
 {
@@ -78,7 +79,9 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
         {
             return new ActionTween(() =>
             {
-                SceneManager.LoadScene(directObject);
+                GameObject.FindGameObjectWithTag("Transition")
+                    .GetComponent<Transition>()
+                    .StartTransition(directObject);
             });
         }
     }
