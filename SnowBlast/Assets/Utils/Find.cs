@@ -16,5 +16,8 @@ namespace Assets.Utils
 
         public static SceneState SceneState =>
             GameObject.FindGameObjectWithTag("SceneState").GetComponent<SceneState>();
+
+        public static ObjectPool ObjectPool =>
+            GameObject.FindGameObjectWithTag("SceneState").GetComponent<ObjectPool>();
     }
 }

@@ -2,6 +2,8 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
+using Assets.Utils;
+using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 using UnityEngine.UI;
 using Random = UnityEngine.Random;
@@ -123,6 +125,11 @@ namespace Assets.Scripts
             var gameOver = GameObject.Find("UILayer").transform.Find("GameOver");
             gameOver.GetComponent<Text>().text = "VICTORY!";
             gameOver.gameObject.SetActive(true);
+            GameState.ArenaVictory = true;
+            this.BeginSerial()
+                .Wait(1.0f)
+                .Then(() => Utils.Utils.TransitionToScene("Hallway"))
+                .Start();
             return ArenaState.Done;
         }
     }

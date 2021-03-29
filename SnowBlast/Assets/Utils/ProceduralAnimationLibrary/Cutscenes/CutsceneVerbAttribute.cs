@@ -14,7 +14,5 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
         {
             Name = verb;
         }
-
-        public bool NoSubject { get; set; }
     }
 }

@@ -4,8 +4,6 @@ using Assets.Scripts.Scene;
 using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using Assets.Utils.ProceduralAnimationLibrary.Tweens;
 using UnityEngine;
-using UnityEngine.SceneManagement;
-using Object = UnityEngine.Object;
 
 namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
 {
@@ -74,15 +72,16 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
             }).While(() => !done).Then(() => unsay?.Invoke());
         }
 
-        [CutsceneVerb(NoSubject = true)]
+        [CutsceneVerb]
         public static ITween LoadScene(string directObject)
         {
-            return new ActionTween(() =>
-            {
-                GameObject.FindGameObjectWithTag("Transition")
-                    .GetComponent<Transition>()
-                    .StartTransition(directObject);
-            });
+            return new ActionTween(() => { Utils.TransitionToScene(directObject); });
+        }
+
+        [CutsceneVerb]
+        public static ITween Disable(GameObject directObject)
+        {
+            return new ActionTween(() => directObject.SetActive(false));
         }
     }
 }

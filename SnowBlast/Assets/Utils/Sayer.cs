@@ -10,7 +10,7 @@ namespace Assets.Utils
     {
         public static Action Say(GameObject subject, string directObject, bool showConfirmWithAOnBubble)
         {
-            var template = ObjectPool.Instance.Objects["SpeechBubble"];
+            var template = Find.ObjectPool.Get("SpeechBubble");
             var instance = Object.Instantiate(template);
             var floater = instance.GetComponent<FloatAbove>();
             floater.SetTarget(subject);

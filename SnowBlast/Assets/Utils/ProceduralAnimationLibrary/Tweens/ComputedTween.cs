@@ -19,6 +19,11 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
             Initial = initial;
         }
 
+        public void Instant()
+        {
+            Callback(Initial(), 1.0f);
+        }
+
         public IEnumerator Start()
         {
             var timeIn = Time.fixedTime;

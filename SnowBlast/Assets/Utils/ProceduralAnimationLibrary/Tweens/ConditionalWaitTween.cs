@@ -13,6 +13,11 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
             Condition = condition;
         }
 
+        public void Instant()
+        {
+            // Nothing to do.
+        }
+
         public IEnumerator Start()
         {
             while (Condition())

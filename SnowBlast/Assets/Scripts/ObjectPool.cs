@@ -6,18 +6,24 @@ namespace Assets.Scripts
 {
     public class ObjectPool: MonoBehaviour
     {
-        public static ObjectPool Instance;
-
         [SerializeField] 
         private GameObject[] ObjectReferences;
 
         [HideInInspector]
-        public Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
+        private Dictionary<string, GameObject> Objects = new Dictionary<string, GameObject>();
 
-        void Start()
+        private void Initialize()
         {
-            Instance = this;
-            Objects = ObjectReferences.ToDictionary(t => t.name, t => t);
+            if (!Objects.Any())
+            {
+                Objects = ObjectReferences.ToDictionary(t => t.name, t => t);
+            }
+        }
+
+        public GameObject Get(string name)
+        {
+            Initialize();
+            return Objects[name];
         }
     }
 }

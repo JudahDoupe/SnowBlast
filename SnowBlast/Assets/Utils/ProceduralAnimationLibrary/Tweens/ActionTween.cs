@@ -11,6 +11,9 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
             Callback = callback;
         }
 
-        public void Act() => Callback();
+        public void Instant()
+        {
+            Callback();
+        }
     }
 }

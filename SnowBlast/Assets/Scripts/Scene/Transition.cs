@@ -1,4 +1,5 @@
 ﻿#nullable enable
+using Assets.Utils;
 using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
 using UnityEngine;
 using UnityEngine.SceneManagement;
@@ -34,7 +35,7 @@ namespace Assets.Scripts.Scene
                 });
         }
 
-        private Rect UiSize => GameObject.Find("GUI").GetComponent<RectTransform>().rect;
+        private Rect UiSize => Camera.main.pixelRect;
 
         private Vector3 StartPosition => new Vector3(UiSize.width, 0, 0);
         private Vector3 MidPosition => new Vector3(-UiSize.height / 2, 0, 0);
@@ -46,20 +47,19 @@ namespace Assets.Scripts.Scene
             var circle = transform.Find("Circle").GetComponent<RectTransform>();
             var circleEnd = transform.Find("CircleEnd").GetComponent<RectTransform>();
             var tail = transform.Find("Tail").GetComponent<RectTransform>();
-            var uiSize = GameObject.Find("GUI").GetComponent<RectTransform>().rect;
 
-            myPos.sizeDelta = new Vector2(uiSize.width, uiSize.height);
-            myPos.localPosition = new Vector3(uiSize.width, 0, 0);
+            myPos.sizeDelta = new Vector2(UiSize.width, UiSize.height);
+            myPos.localPosition = new Vector3(UiSize.width, 0, 0);
 
-            circle.sizeDelta = new Vector2(uiSize.height, uiSize.height);
+            circle.sizeDelta = new Vector2(UiSize.height, UiSize.height);
 
-            tail.sizeDelta = new Vector2(uiSize.width, uiSize.height);
-            tail.localPosition = new Vector3(uiSize.height / 2, 0, 0);
+            tail.sizeDelta = new Vector2(UiSize.width, UiSize.height);
+            tail.localPosition = new Vector3(UiSize.height / 2, 0, 0);
 
-            circleEnd.sizeDelta = new Vector2(uiSize.height, uiSize.height);
-            circleEnd.localPosition = new Vector3(uiSize.width, 0, 0);
+            circleEnd.sizeDelta = new Vector2(UiSize.height, UiSize.height);
+            circleEnd.localPosition = new Vector3(UiSize.width, 0, 0);
 
-            Debug.Log(uiSize.width + uiSize.height);
+            Debug.Log(UiSize.width + UiSize.height);
         }
     }
 }

@@ -3,7 +3,6 @@ using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
 using Assets.Utils.ProceduralAnimationLibrary.Tweens;
-using FluentAssertions;
 
 #nullable  enable
 namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
@@ -12,14 +11,17 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
     {
         private readonly List<ITween> Behaviors = new List<ITween>();
 
+        public void Instant()
+        {
+            foreach (var behavior in Behaviors)
+            {
+                behavior.Instant();
+            }
+        }
+
         public void Append(ITween behavior)
         {
             Behaviors.Add(behavior);
-        }
-
-        public void Append(SerialTweener other)
-        {
-            Behaviors.AddRange(other.Behaviors);
         }
 
         public IEnumerator Begin(Action? onComplete = null)
@@ -38,7 +40,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
             {
                 if (b is ActionTween action)
                 {
-                    action.Act();
+                    action.Instant();
                     return true;
                 }
 
@@ -53,7 +55,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
             {
                 if (behavior is ActionTween action)
                 {
-                    action.Act();
+                    action.Instant();
                 }
                 else if (behavior is IEnumeratorTween enumerator)
                 {

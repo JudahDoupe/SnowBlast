@@ -1,0 +1,9 @@
+Begin Instant
+    Disable ExitInteraction
+    Disable PyramidInteraction
+    Player moveTo Mark
+    Player face Pyramid
+End Instant
+Pyramid say "I accounted for everything except for you, Ayla."
+Pyramid say "At last, I am at peace."
+Pyramid say "ZZZZZZZZZzzzzzzzzzzzztttt...."

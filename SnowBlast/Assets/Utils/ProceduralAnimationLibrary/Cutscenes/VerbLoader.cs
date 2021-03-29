@@ -42,7 +42,9 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
             {
                 var expectedParameters = new Queue<ParameterInfo>(verb.Method.GetParameters());
 
-                if (!verb.Action.NoSubject)
+                var noSubject = expectedParameters.First().Name == "directObject";
+
+                if (!noSubject)
                 {
                     var subjectParam = expectedParameters.Dequeue();
                     subjectParam.Name.Should().Be("subject");
@@ -71,7 +73,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
 
                     var actuals = new List<object?>();
 
-                    if (!verb.Action.NoSubject)
+                    if (!noSubject)
                     {
                         actuals.Add(subject);
                     }
@@ -109,7 +111,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
                 };
 
                 var name = verb.Action.Name ?? verb.Method.Name;
-                Verbs[name] = new VerbDetails(action, doIsString, verb.Action.NoSubject);
+                Verbs[name] = new VerbDetails(action, doIsString, noSubject);
             }
         }
     }

@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 using Assets.Utils.ProceduralAnimationLibrary.Tweeners;
+using Assets.Utils.ProceduralAnimationLibrary.Tweens;
 using FluentAssertions;
 using UnityEngine;
 using UnityEngine.EventSystems;
@@ -16,11 +17,32 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
             VerbLoader.Initialize();
             var result = new SerialTweener();
 
+            var instant = false;
+
             foreach (var line in text.Split('\n')
                 .Select(line => line.Trim())
-                .Where(line => !string.IsNullOrWhiteSpace(line))
-                .Where(line => !line.StartsWith("#")))
+                .Select(line =>
+                {
+                    var m = Regex.Match(line, @"^(?<line>[^#]*)");
+                    return m.Groups["line"].Value;
+                })
+                .Where(line => !string.IsNullOrWhiteSpace(line)))
             {
+                if (Regex.IsMatch(line, @"^begin\s+instant$", RegexOptions.IgnoreCase))
+                {
+                    instant.Should().Be(false, "nested Begin Instant not legal.");
+                    instant = true;
+                    continue;
+                }
+
+                if (Regex.IsMatch(line, @"^end\s+instant$", RegexOptions.IgnoreCase))
+                {
+                    instant.Should().Be(true, "End Instant without Begin Instant not legal.");
+                    instant = false;
+                    continue;
+                }
+
+
                 var subjectMatch = Regex.Match(line, @"^\s*(?<Subject>\w+)");
                 subjectMatch.Success.Should().BeTrue();
                 var remainder = line.Substring(subjectMatch.Length).Trim();
@@ -49,6 +71,10 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
                 {
                     var temp = verbDetails.Action.Invoke(subject!, remainder,
                         new Dictionary<string, string>());
+                    if (instant)
+                    {
+                        temp = temp.ToInstant();
+                    }
                     result.Append(temp);
                     continue;
                 }
@@ -67,6 +93,10 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Cutscenes
                         : new Dictionary<string, string>();
 
                 var temp2 = verbDetails.Action.Invoke(subject!, directObject, parameters);
+                if (instant)
+                {
+                    temp2 = temp2.ToInstant();
+                }
                 result.Append(temp2);
             }
 

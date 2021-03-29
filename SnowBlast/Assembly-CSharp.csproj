@@ -72,12 +72,14 @@
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextSelector_A.cs" />
     <Compile Include="Assets\Utils\ProceduralAnimationLibrary\Tweeners\ParallelTweener.cs" />
     <Compile Include="Assets\Scripts\Player\Player.cs" />
+    <Compile Include="Assets\Scripts\Scene\Transition.cs" />
     <Compile Include="Assets\Utils\ProceduralAnimationLibrary\Tweens\ComputedTween.cs" />
     <Compile Include="Assets\Utils\ProceduralAnimationLibrary\JCurve.cs" />
     <Compile Include="Assets\Scripts\Player\AimingComponent.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexShakeA.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark04.cs" />
     <Compile Include="Assets\Scripts\GenericEnemyMovement.cs" />
+    <Compile Include="Assets\Utils\GameState.cs" />
     <Compile Include="Assets\Utils\VectorExtensions.cs" />
     <Compile Include="Assets\Utils\ProceduralAnimationLibrary\Tweens\IEnumeratorTween.cs" />
     <Compile Include="Assets\Scripts\Player\DashComponent.cs" />
@@ -129,6 +131,7 @@
     <Compile Include="Assets\Utils\ProceduralAnimationLibrary\Cutscenes\VerbLoader.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_FrameRateCounter.cs" />
     <Compile Include="Assets\Scripts\CameraController.cs" />
+    <Compile Include="Assets\Utils\Utils.cs" />
     <Compile Include="Assets\Scripts\RotateTowardsCamera.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\VertexJitter.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\TMP_TextEventHandler.cs" />
@@ -151,7 +154,7 @@
     <Compile Include="Assets\Scripts\WaveAnnouncement.cs" />
     <Compile Include="Assets\TextMesh Pro\Examples &amp; Extras\Scripts\Benchmark01.cs" />
     <Compile Include="Assets\Utils\ProceduralAnimationLibrary\Cutscenes\CutsceneVerbAttribute.cs" />
-    <Compile Include="Assets\Scripts\Scene\Transition.cs" />
+    <Compile Include="Assets\Scripts\HallwayController.cs" />
   </ItemGroup>
   <ItemGroup>
      <None Include="Assets\TextMesh Pro\Shaders\TMPro.cginc" />
@@ -172,6 +175,7 @@
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Leading Characters.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Properties.cginc" />
      <None Include="Assets\TextMesh Pro\Shaders\TMPro_Surface.cginc" />
+     <None Include="Assets\Cutscenes\Denoument.txt" />
      <None Include="Assets\TextMesh Pro\Resources\LineBreaking Following Characters.txt" />
      <None Include="Assets\TextMesh Pro\Shaders\TMP_SDF-Mobile Masking.shader" />
      <None Include="Assets\Cutscenes\FinalConflict.txt" />

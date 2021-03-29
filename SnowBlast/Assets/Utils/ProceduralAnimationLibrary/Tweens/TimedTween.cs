@@ -3,23 +3,11 @@ using System.Collections;
 
 namespace Assets.Utils.ProceduralAnimationLibrary.Tweens
 {
-    public class TimedTween : IEnumeratorTween
+    public class TimedTween : JComputedBehavior<int>
     {
-        private readonly JComputedBehavior<int> Implementation;
-
-        public TimedTween(float duration, Action<float> callback, float[] curve)
+        public TimedTween(float duration, Action<float> callback, float[] curve) :
+            base(() => 0, _ => duration, (_, r) => callback(r), curve)
         {
-            Implementation = new JComputedBehavior<int>(
-                () => 0,
-                _ => duration,
-                (_, r) => callback(r),
-                curve
-            );
-        }
-
-        public IEnumerator Start()
-        {
-            return Implementation.Start();
         }
     }
 }
