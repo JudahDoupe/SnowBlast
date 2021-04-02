@@ -8,4 +8,10 @@ EditorBuildSettings:
   - enabled: 1
     path: Assets/Scenes/TestScene.unity
     guid: d1c3109bdb54ad54c8a2b2838528e640
+  - enabled: 1
+    path: Assets/Scenes/SplashScreen.unity
+    guid: 759f72d16a61af647999e2efe084277b
+  - enabled: 1
+    path: Assets/Scenes/Hallway.unity
+    guid: 96d92bba0e69c974491478989a64eb66
   m_configObjects: {}
