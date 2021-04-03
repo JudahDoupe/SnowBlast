@@ -8,7 +8,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
 {
     public interface ITweener
     {
-        void Append(ITween tween);
+        void AppendInternal(ITween tween);
 
         IEnumerator Begin(Action? onCompleteCallback = null);
     }

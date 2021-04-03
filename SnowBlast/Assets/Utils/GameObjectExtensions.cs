@@ -2,6 +2,7 @@
 using System.Linq;
 using FluentAssertions;
 using UnityEngine;
+using UnityEngine.UI;
 
 namespace Assets.Utils
 {
@@ -92,6 +93,13 @@ namespace Assets.Utils
                     }
                 }
             }
+        }
+
+        public static void SetAlpha(this Graphic graphic, float alpha)
+        {
+            var anyKeyColor = graphic.color;
+            anyKeyColor.a = alpha;
+            graphic.color = anyKeyColor;
         }
     }
 }

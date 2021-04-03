@@ -4,6 +4,11 @@ Begin Instant
     Player moveTo Mark
     Player face Pyramid
 End Instant
-Pyramid say "I accounted for everything except for you, Ayla."
-Pyramid say "At last, I am at peace."
-Pyramid say "ZZZZZZZZZzzzzzzzzzzzztttt...."
+Pyramid say I accounted for everything except for you, Ayla.
+Pyramid say At last, I am at peace.
+Pyramid say ZZZZZZZZZzzzzzzzzzzzztttt....
+Player face Mark2
+Player moveTo Mark2
+Player face Camera
+Player say At last, I can return home.
+LoadScene Credits

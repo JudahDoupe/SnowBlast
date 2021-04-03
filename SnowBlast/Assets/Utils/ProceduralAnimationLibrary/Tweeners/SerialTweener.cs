@@ -19,7 +19,7 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
             }
         }
 
-        public void Append(ITween behavior)
+        public void AppendInternal(ITween behavior)
         {
             Behaviors.Add(behavior);
         }

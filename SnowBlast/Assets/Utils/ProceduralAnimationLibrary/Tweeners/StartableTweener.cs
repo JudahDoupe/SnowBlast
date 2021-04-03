@@ -26,9 +26,9 @@ namespace Assets.Utils.ProceduralAnimationLibrary.Tweeners
             Coroutine = GameObject.StartCoroutine(Begin(onComplete));
         }
 
-        public void Append(ITween tween)
+        public void AppendInternal(ITween tween)
         {
-            Implementation.Append(tween);
+            Implementation.AppendInternal(tween);
         }
 
         public IEnumerator Begin(Action? onCompleteCallback)
